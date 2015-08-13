@@ -5,9 +5,15 @@ use DBorsatto\GiantBomb\Client;
 
 class ClientTest extends PHPUnit_Framework_TestCase
 {
+    /**
+     * @var Client
+     */
     private $client;
 
-    public function setUp()
+    /**
+     * {@inheritdoc}
+     */
+    protected function setUp()
     {
         $config = new Config('MyApiKey');
         $this->client = new Client($config);
@@ -16,7 +22,7 @@ class ClientTest extends PHPUnit_Framework_TestCase
     public function repositoryProvider()
     {
         return array(
-            array('Accessory'),/*
+            array('Accessory'),
             array('Character'),
             array('Chat'),
             array('Company'),
@@ -39,7 +45,7 @@ class ClientTest extends PHPUnit_Framework_TestCase
             array('Type'),
             array('UserReview'),
             array('Video'),
-            array('VideoType'),*/
+            array('VideoType'),
         );
     }
 

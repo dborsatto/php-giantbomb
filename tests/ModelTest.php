@@ -9,6 +9,11 @@ class ModelTest extends \PHPUnit_Framework_TestCase
      */
     private $model = null;
 
+    /**
+     * Stubs values
+     *
+     * @var array
+     */
     private $testValues = array(
         'key1' => 'value2',
         'key3' => array('value4', 'value5'),
@@ -16,7 +21,10 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         'key8' => null,
     );
 
-    public function setUp()
+    /**
+     * {@inheritdoc}
+     */
+    protected function setUp()
     {
         $this->model = new Model('TestModel', $this->testValues);
     }

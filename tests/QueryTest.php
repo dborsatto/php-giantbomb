@@ -9,7 +9,10 @@ class QueryTest extends PHPUnit_Framework_TestCase
      */
     private $query;
 
-    public function setUp()
+    /**
+     * {@inheritdoc}
+     */
+    protected function setUp()
     {
         $this->query = new Query();
 
