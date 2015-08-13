@@ -22,68 +22,82 @@ class Repository
      *
      * @var string
      */
-    protected $name = null;
+    private $name = null;
 
     /**
      * The URL for the resource with a single result element.
      *
      * @var string
      */
-    protected $urlSingle = null;
+    private $urlSingle = null;
 
     /**
      * The URL for the resource with a collection result element.
      *
      * @var string
      */
-    protected $urlCollection = null;
+    private $urlCollection = null;
 
     /**
      * Fields contained in the single element response.
      *
      * @var array
      */
-    protected $valuesSingle = array();
+    private $valuesSingle = array();
 
     /**
      * Fields contained in the element collection response.
      *
      * @var array
      */
-    protected $valuesCollection = array();
+    private $valuesCollection = array();
 
     /**
      * The array of current query string parameters.
      *
      * @var array
      */
-    protected $queryParameters = array();
+    private $queryParameters = array();
 
     /**
      * Fields avaialbe for filtering in the current repository.
      *
      * @var array
      */
-    protected $fieldsFilterable = array();
+    private $fieldsFilterable = array();
 
     /**
      * Fields available for sorting in the current repository.
      *
      * @var array
      */
-    protected $fieldsSortable = array();
+    private $fieldsSortable = array();
 
     /**
      * Whether the current model requires a [Resource ID].
      *
      * @var bool
      */
-    protected $resourceId = true;
+    private $resourceId = true;
 
     /**
      * @var Client
      */
-    protected $client = null;
+    private $client = null;
+
+    /**
+     * The default configuration values
+     *
+     * @var array
+     */
+    private static $defaultConfig = array(
+        'values_single' => array(),
+        'values_collection' => array(),
+        'query_parameters' => array(),
+        'fields_filterable' => array(),
+        'fields_sortable' => array(),
+        'resource_id' => true,
+    );
 
     /**
      * Class constructor.
@@ -94,9 +108,11 @@ class Repository
      */
     public function __construct(Client $client, $name, $config)
     {
-        $this->client = $client;
-
         $this->name = $name;
+
+        $this->setClient($client);
+
+        $config = array_merge(self::$defaultConfig, $config);
 
         $this->urlSingle = $config['url_single'];
         $this->urlCollection = $config['url_collection'];
@@ -110,6 +126,20 @@ class Repository
         $this->fieldsSortable = $config['fields_sortable'];
 
         $this->resourceId = $config['resource_id'];
+    }
+
+    /**
+     * Sets the current Client object.
+     *
+     * @param Client $client
+     *
+     * @return Repository
+     */
+    public function setClient(Client $client)
+    {
+        $this->client = $client;
+
+        return $this;
     }
 
     /**
@@ -193,6 +223,9 @@ class Repository
         }
         if ($type == 'single' and !$parameters['resource_id']) {
             throw new \InvalidArgumentException(sprintf('Trying to query a single element without providing a resource ID for repository %s', $this->name));
+        }
+        if ($type == 'collection' and $parameters['resource_id']) {
+            throw new \InvalidArgumentException(sprintf('Trying to query a collection element by providing a resource ID for repository %s', $this->name));
         }
 
         $returnParameters = array();

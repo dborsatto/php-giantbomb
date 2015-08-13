@@ -62,7 +62,7 @@ class Client
     public function getRepository($name)
     {
         if (!isset($this->repositories[$name])) {
-            throw new InvalidArgumentException(sprintf('The name %s is not a valid repository, try one of %s', $name, implode(', ', array_keys($this->repositories))));
+            throw new \InvalidArgumentException(sprintf('The name %s is not a valid repository, try one of %s', $name, implode(', ', array_keys($this->repositories))));
         }
 
         return $this->repositories[$name];

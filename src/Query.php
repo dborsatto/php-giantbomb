@@ -159,29 +159,33 @@ class Query
     /**
      * Loads an array of resource Model given the current data.
      *
+     * @param Repository $repository
+     *
      * @return array
      */
-    public function find()
+    public function find(Repository $repository = null)
     {
-        if (!$this->repository) {
+        if (!$repository and !($repository = $this->repository)) {
             throw new \RuntimeException('The current Query object is not tied to any Repository');
         }
 
-        return $this->repository->find($this->compileParameters());
+        return $repository->find($this->compileParameters());
     }
 
     /**
      * Loads a single resource Model given the current data.
      *
+     * @param Repository $repository
+     *
      * @return Model
      */
-    public function findOne()
+    public function findOne(Repository $repository = null)
     {
-        if (!$this->repository) {
+        if (!$repository and !($repository = $this->repository)) {
             throw new \RuntimeException('The current Query object is not tied to any Repository');
         }
 
-        return $this->repository->findOne($this->compileParameters());
+        return $repository->findOne($this->compileParameters());
     }
 
     /**

@@ -1,8 +1,10 @@
 <?php
 
+namespace DBorsatto\GiantBomb\Test;
+
 use DBorsatto\GiantBomb\Config;
 
-class ConfigTest extends PHPUnit_Framework_TestCase
+class ConfigTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Stub API key
