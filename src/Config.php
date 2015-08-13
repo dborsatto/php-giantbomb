@@ -17,7 +17,7 @@ use Symfony\Component\Yaml\Yaml;
  *
  * @author Davide Borsatto <davide.borsatto@gmail.com>
  */
-class Config implements ConfigInterface
+class Config
 {
     /**
      * The API key.

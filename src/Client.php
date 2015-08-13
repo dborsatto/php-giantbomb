@@ -34,7 +34,7 @@ class Client
      *
      * @param Config $config
      */
-    public function __construct(ConfigInterface $config)
+    public function __construct(Config $config)
     {
         $this->config = $config;
         $this->initializeRepositories($config->getRepositories());

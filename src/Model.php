@@ -64,7 +64,11 @@ class Model
     public function get($value, $default = null)
     {
         if (!$this->isValidValue($value)) {
-            throw new Exception(sprintf('Value %s is not a valid key, exceping one of %s', $value, implode(', ', array_keys($this->values))));
+            throw new \InvalidArgumentException(sprintf(
+                'Value %s is not a valid key, expecting one of %s',
+                $value,
+                implode(', ', array_keys($this->values))
+                ));
         }
 
         return $this->values[$value] ? $this->values[$value] : $default;
@@ -86,7 +90,7 @@ class Model
             return $this->get($key);
         }
 
-        return $this->get($name);
+        throw new \InvalidArgumentException(sprintf('Call to invalid function %s on model %s', $name, $this->name));
     }
 
     /**
@@ -110,7 +114,7 @@ class Model
      */
     protected function isValidValue($value)
     {
-        return isset($this->values[$value]);
+        return array_key_exists($value, $this->values);
     }
 
     /**

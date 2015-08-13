@@ -64,7 +64,9 @@ class Query
      */
     public function __construct(Repository $repository = null)
     {
-        $this->setRepository($repository);
+        if ($repository) {
+            $this->setRepository($repository);
+        }
     }
 
     /**
@@ -143,13 +145,13 @@ class Query
     /**
      * Sets a resource ID for the current query.
      *
-     * @param string $id
+     * @param string $resourceId
      *
      * @return Query
      */
-    public function setResourceId($id)
+    public function setResourceId($resourceId)
     {
-        $this->resourceId = $id;
+        $this->resourceId = $resourceId;
 
         return $this;
     }
@@ -162,7 +164,7 @@ class Query
     public function find()
     {
         if (!$this->repository) {
-            throw new RuntimeException('The current Query object is not tied to any Repository');
+            throw new \RuntimeException('The current Query object is not tied to any Repository');
         }
 
         return $this->repository->find($this->compileParameters());
@@ -176,7 +178,7 @@ class Query
     public function findOne()
     {
         if (!$this->repository) {
-            throw new RuntimeException('The current Query object is not tied to any Repository');
+            throw new \RuntimeException('The current Query object is not tied to any Repository');
         }
 
         return $this->repository->findOne($this->compileParameters());
