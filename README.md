@@ -1,8 +1,18 @@
 # php-giantbomb
 
+[![Software License][https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square]](LICENSE.md)
+[![Latest Stable Version](https://poser.pugx.org/dborsatto/php-giantbomb/v/stable)](https://packagist.org/packages/dborsatto/php-giantbomb)
 [![Build Status](https://secure.travis-ci.org/dborsatto/php-giantbomb.png?branch=master)](http://travis-ci.org/dborsatto/php-giantbomb)
 
 This is a library that acts as a wrapper for GiantBomb's API.
+
+## Install
+
+Via Composer
+
+``` bash
+$ composer require dborsatto/php-giantbomb
+```
 
 ## Usage
 ```php
@@ -40,3 +50,9 @@ $results = $manager->getRepository('Search')
     ->find();
 $results = $manager->search('Uncharted', 'game,franchise');
 ```
+
+For the full option list visit [GiantBomb's API doc](http://www.giantbomb.com/api/documentation).
+
+## License
+
+The MIT License (MIT). Please see [License File](LICENSE.md) for more information.

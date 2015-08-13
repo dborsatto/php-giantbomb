@@ -2,3 +2,4 @@ composer.phar
 api_key.php
 composer.lock
 vendor/
+build/
