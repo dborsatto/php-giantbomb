@@ -1,6 +1,5 @@
 # php-giantbomb
 
-[![Software License][https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square]](LICENSE.md)
 [![Latest Stable Version](https://poser.pugx.org/dborsatto/php-giantbomb/v/stable)](https://packagist.org/packages/dborsatto/php-giantbomb)
 [![Build Status](https://secure.travis-ci.org/dborsatto/php-giantbomb.png?branch=master)](http://travis-ci.org/dborsatto/php-giantbomb)
 
