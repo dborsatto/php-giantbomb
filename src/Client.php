@@ -10,14 +10,14 @@
  */
 namespace DBorsatto\GiantBomb;
 
-use GuzzleHttp\Client;
+use GuzzleHttp\Client as GuzzleClient;
 
 /**
- * Class Manager.
+ * Class Client.
  *
  * @author Davide Borsatto <davide.borsatto@gmail.com>
  */
-class Manager
+class Client
 {
     /**
      * @var Config
@@ -131,7 +131,7 @@ class Manager
 
         $url = $this->config->getApiEndpoint().$url.'?'.$query;
 
-        $client = new Client();
+        $client = new GuzzleClient();
         $response = $client->get($url);
 
         if ($response->getStatusCode() != 200) {

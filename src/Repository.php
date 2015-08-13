@@ -81,20 +81,20 @@ class Repository
     protected $resourceId = true;
 
     /**
-     * @var Manager
+     * @var Client
      */
-    protected $manager = null;
+    protected $client = null;
 
     /**
      * Class constructor.
      *
-     * @param Manager $manager
-     * @param string  $name
-     * @param array   $config
+     * @param Client $client
+     * @param string $name
+     * @param array  $config
      */
-    public function __construct(Manager $manager, $name, $config)
+    public function __construct(Client $client, $name, $config)
     {
-        $this->manager = $manager;
+        $this->client = $client;
 
         $this->name = $name;
 
@@ -138,7 +138,7 @@ class Repository
         $parameters = $this->formatParameters($parameters, 'collection');
         $url = $this->urlCollection.'/';
 
-        $results = $this->manager->loadResource($url, $parameters['parameters'], 'collection');
+        $results = $this->client->loadResource($url, $parameters['parameters'], 'collection');
 
         $models = array();
         foreach ($results as $result) {
@@ -164,7 +164,7 @@ class Repository
         $parameters = $this->formatParameters($parameters, 'single');
         $url = $this->urlSingle.'/'.$parameters['resource_id'].'/';
 
-        $result = $this->manager->loadResource($url, $parameters['parameters'], 'single');
+        $result = $this->client->loadResource($url, $parameters['parameters'], 'single');
 
         return new Model($this->name, $result);
     }

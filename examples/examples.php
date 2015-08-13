@@ -3,12 +3,12 @@
 require __DIR__.'/../vendor/autoload.php';
 require __DIR__.'/../api_key.php';
 
-// Creates a Config object and passes to the Manager
+// Creates a Config object and passes to the Client
 $config = new DBorsatto\GiantBomb\Config($apiKey);
-$manager = new DBorsatto\GiantBomb\Manager($config);
+$client = new DBorsatto\GiantBomb\Client($config);
 
 // Standard query creation process
-$games = $manager->getRepository('Game')->query()
+$games = $client->getRepository('Game')->query()
     ->addFilterBy('name', 'Uncharted')
     ->sortBy('original_release_date', 'asc')
     ->setFieldList(array('id', 'name', 'deck'))
@@ -16,20 +16,20 @@ $games = $manager->getRepository('Game')->query()
     ->setParameter('offset', 0)
     ->find();
 
-// These methods are all equivalent
-$game = $manager->getRepository('Game')
+// These options are all equivalent
+$game = $client->getRepository('Game')
     ->query()
     ->setResourceId('3030-22420')
     ->findOne();
-$game = $manager->query('Game')
+$game = $client->query('Game')
     ->setResourceId('3030-22420')
     ->findOne();
-$game = $manager->findOne('Game', '3030-22420');
+$game = $client->findOne('Game', '3030-22420');
 
-// These methods are equivalent
-$results = $manager->getRepository('Search')
+// These options are equivalent
+$results = $client->getRepository('Search')
     ->query()
-    ->setParameter('query', $string)
+    ->setParameter('query', 'Uncharted')
     ->setParameter('resources', 'game,franchise')
     ->find();
-$results = $manager->search('Uncharted', 'game,franchise');
+$results = $client->search('Uncharted', 'game,franchise');
