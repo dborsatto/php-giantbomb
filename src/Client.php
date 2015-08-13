@@ -116,11 +116,10 @@ class Client
      *
      * @param string $url
      * @param array  $parameters
-     * @param string $type
      *
      * @return array
      */
-    public function loadResource($url, $parameters, $type)
+    public function loadResource($url, $parameters)
     {
         $parameters['format'] = 'json';
         $parameters['api_key'] = $this->config->getApiKey();

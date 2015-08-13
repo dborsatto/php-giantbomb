@@ -168,7 +168,7 @@ class Repository
         $parameters = $this->formatParameters($parameters, 'collection');
         $url = $this->urlCollection.'/';
 
-        $results = $this->client->loadResource($url, $parameters['parameters'], 'collection');
+        $results = $this->client->loadResource($url, $parameters['parameters']);
 
         $models = array();
         foreach ($results as $result) {
@@ -194,7 +194,7 @@ class Repository
         $parameters = $this->formatParameters($parameters, 'single');
         $url = $this->urlSingle.'/'.$parameters['resource_id'].'/';
 
-        $result = $this->client->loadResource($url, $parameters['parameters'], 'single');
+        $result = $this->client->loadResource($url, $parameters['parameters']);
 
         return new Model($this->name, $result);
     }
