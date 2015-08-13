@@ -57,21 +57,20 @@ class Model
      * Returns a single value.
      *
      * @param string $value
-     * @param mixed  $default
      *
      * @return mixed
      */
-    public function get($value, $default = null)
+    public function get($value)
     {
         if (!$this->isValidValue($value)) {
             throw new \InvalidArgumentException(sprintf(
                 'Value %s is not a valid key, expecting one of %s',
                 $value,
                 implode(', ', array_keys($this->values))
-                ));
+            ));
         }
 
-        return $this->values[$value] ? $this->values[$value] : $default;
+        return $this->values[$value];
     }
 
     /**

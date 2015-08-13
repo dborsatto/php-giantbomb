@@ -42,7 +42,6 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->model->get('key3'), array('value4', 'value5'));
         $this->assertEquals($this->model->get('key6'), 7);
         $this->assertEquals($this->model->get('key8'), null);
-        $this->assertEquals($this->model->get('key8', 'SomeDefaultValue'), 'SomeDefaultValue');
     }
 
     /**
