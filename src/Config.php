@@ -10,6 +10,8 @@
  */
 namespace dborsatto\GiantBomb;
 
+use Symfony\Component\Yaml\Yaml;
+
 /**
  * Class Config.
  *
@@ -44,9 +46,15 @@ class Config implements ConfigInterface
      * @param string $apiKey
      * @param array  $config
      */
-    public function __construct($apiKey, array $config)
+    public function __construct($apiKey, array $config = null)
     {
         $this->apiKey = $apiKey;
+
+        // If no configuration is provided, loads the default
+        if (!$config) {
+            $config = Yaml::parse(file_get_contents(__DIR__.'/Resources/config/api.yml'));
+        }
+
         $this->apiEndpoint = $config['api_endpoint'];
         $this->repositories = $config['repositories'];
     }

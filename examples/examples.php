@@ -3,11 +3,8 @@
 require __DIR__.'/../vendor/autoload.php';
 require __DIR__.'/../api_key.php';
 
-// Parses the default configuration
-$configFile = Symfony\Component\Yaml\Yaml::parse(file_get_contents(__DIR__.'/../api_config.yml'));
-
 // Creates a Config object and passes to the Manager
-$config = new dborsatto\GiantBomb\Config($apiKey, $configFile);
+$config = new dborsatto\GiantBomb\Config($apiKey);
 $manager = new dborsatto\GiantBomb\Manager($config);
 
 // Standard query creation process
