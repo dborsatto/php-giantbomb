@@ -19,7 +19,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "dborsatto\\GiantBomb\\": "src"
+            "DBorsatto\\GiantBomb\\": "src"
         }
     }
 }

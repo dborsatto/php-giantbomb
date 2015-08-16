@@ -4,8 +4,8 @@ require __DIR__.'/../vendor/autoload.php';
 require __DIR__.'/../api_key.php';
 
 // Creates a Config object and passes to the Manager
-$config = new dborsatto\GiantBomb\Config($apiKey);
-$manager = new dborsatto\GiantBomb\Manager($config);
+$config = new DBorsatto\GiantBomb\Config($apiKey);
+$manager = new DBorsatto\GiantBomb\Manager($config);
 
 // Standard query creation process
 $games = $manager->getRepository('Game')->query()

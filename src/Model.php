@@ -8,7 +8,7 @@
  *
  * @copyright (c) 2015, Davide Borsatto
  */
-namespace dborsatto\GiantBomb;
+namespace DBorsatto\GiantBomb;
 
 /**
  * Class Model.
