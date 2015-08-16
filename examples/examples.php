@@ -1,11 +1,5 @@
-# php-giantbomb
+<?php
 
-[![Build Status](https://secure.travis-ci.org/dborsatto/php-giantbomb.png?branch=master)](http://travis-ci.org/dborsatto/php-giantbomb)
-
-This is a library that acts as a wrapper for GiantBomb's API.
-
-## Usage
-```php
 require __DIR__.'/../vendor/autoload.php';
 require __DIR__.'/../api_key.php';
 
@@ -42,4 +36,3 @@ $results = $manager->getRepository('Search')
     ->setParameter('resources', 'game,franchise')
     ->find();
 $results = $manager->search('Uncharted', 'game,franchise');
-```

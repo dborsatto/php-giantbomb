@@ -1,0 +1,218 @@
+api_endpoint: 'http://www.giantbomb.com/api/'
+repositories:
+    Accessory:
+        url_single: accessory
+        url_collection: accessories
+        values_single: [api_detail_url, date_added, date_last_updated, deck, description, id, image, name, site_detail_url]
+        values_collection: [api_detail_url, date_added, date_last_updated, deck, description, id, image, name, site_detail_url]
+        query_parameters: [field_list, limit, offset, sort, filter]
+        fields_filterable: [date_added, date_last_updated, id, name]
+        fields_sortable: [date_added, date_last_updated, id, name]
+        resource_id: true
+    Character:
+        url_single: character
+        url_collection: characters
+        values_single: [aliases, api_detail_url, birthday, concepts, date_added, date_last_updated, deck, description, enemies, first_appeared_in_game, franchises, friends, games, gender, id, image, last_name, locations, name, objects, people, real_name, site_detail_url]
+        values_collection: [aliases, api_detail_url, birthday, date_added, date_last_updated, deck, description, first_appeared_in_game, gender, id, image, last_name, name, real_name, site_detail_url]
+        query_parameters: [field_list, limit, offset, sort, filter]
+        fields_filterable: [aliases, birthday, date_added, date_last_updated, gender, id, name, real_name]
+        fields_sortable: [birthday, date_added, date_last_updated, gender, id, name, real_name]
+        resource_id: true
+    Chat:
+        url_single: chat
+        url_collection: chats
+        values_single: [api_detail_url, channel_name, deck, image, password, site_detail_url, title]
+        values_collection: [api_detail_url, channel_name, deck, image, password, site_detail_url, title]
+        query_parameters: [field_list]
+        fields_filterable: {  }
+        fields_sortable: {  }
+        resource_id: true
+    Company:
+        url_single: company
+        url_collection: companies
+        values_single: [abbreviation, aliases, api_detail_url, characters, concepts, date_added, date_founded, date_last_updated, deck, description, developed_games, developer_releases, distributor_releases, id, image, location_address, location_city, location_country, location_state, locations, name, objects, people, phone, published_games, publisher_releases, site_detail_url, website]
+        values_collection: [abbreviation, aliases, api_detail_url, date_added, date_founded, date_last_updated, deck, description, id, image, location_address, location_city, location_country, location_state, name, phone, site_detail_url, website]
+        query_parameters: [field_list, limit, offset, sort, filter]
+        fields_filterable: [abbreviation, date_added, date_founded, date_last_updated, id, location_city, location_country, location_state, name]
+        fields_sortable: [abbreviation, date_added, date_founded, date_last_updated, id, location_city, location_country, location_state, name]
+        resource_id: true
+    Concept:
+        url_single: concept
+        url_collection: concepts
+        values_single: [aliases, api_detail_url, characters, concepts, date_added, date_last_updated, deck, description, first_appeared_in_franchise, first_appeared_in_game, franchises, games, id, image, locations, name, objects, people, related_concepts, site_detail_url]
+        values_collection: [aliases, api_detail_url, date_added, date_last_updated, deck, description, first_appeared_in_franchise, first_appeared_in_game, id, image, name, site_detail_url]
+        query_parameters: [field_list, limit, offset, sort, filter]
+        fields_filterable: [aliases, date_added, date_last_updated, id, name]
+        fields_sortable: [date_added, date_last_updated, id, name]
+        resource_id: true
+    Franchise:
+        url_single: franchise
+        url_collection: franchises
+        values_single: [aliases, api_detail_url, characters, concepts, date_added, date_last_updated, deck, description, games, id, image, locations, name, objects, people, site_detail_url]
+        values_collection: [aliases, api_detail_url, date_added, date_last_updated, deck, description, id, image, name, site_detail_url]
+        query_parameters: [field_list, limit, offset]
+        fields_filterable: {  }
+        fields_sortable: {  }
+        resource_id: true
+    Game:
+        url_single: game
+        url_collection: games
+        values_single: [aliases, api_detail_url, characters, concepts, date_added, date_last_updated, deck, description, developers, expected_release_day, expected_release_month, expected_release_quarter, expected_release_year, first_appearance_characters, first_appearance_concepts, first_appearance_locations, first_appearance_objects, first_appearance_people, franchises, genres, id, image, images, killed_characters, locations, name, number_of_user_reviews, objects, original_game_rating, original_release_date, people, platforms, publishers, releases, reviews, similar_games, site_detail_url, themes, videos]
+        values_collection: [aliases, api_detail_url, date_added, date_last_updated, deck, description, expected_release_month, expected_release_quarter, expected_release_year, id, image, name, number_of_user_reviews, original_game_rating, original_release_date, platforms, site_detail_url]
+        query_parameters: [field_list, limit, offset, platforms, sort, filter]
+        fields_filterable: [aliases, date_added, date_last_updated, expected_release_month, expected_release_quarter, expected_release_year, id, name, number_of_user_reviews, original_release_date, platforms]
+        fields_sortable: [date_added, date_last_updated, id, name, number_of_user_reviews, original_game_rating, original_release_date]
+        resource_id: true
+    GameRating:
+        url_single: game_rating
+        url_collection: game_ratings
+        values_single: [api_detail_url, id, image, name, rating_board]
+        values_collection: [api_detail_url, id, image, name, rating_board]
+        query_parameters: [field_list, limit, offset, sort, filter]
+        fields_filterable: [id, name, rating_board]
+        fields_sortable: [id, name, rating_board]
+        resource_id: true
+    Genre:
+        url_single: genre
+        url_collection: genres
+        values_single: [api_detail_url, date_added, date_last_updated, deck, description, id, image, name, site_detail_url]
+        values_collection: [api_detail_url, date_added, date_last_updated, deck, description, id, image, name, site_detail_url]
+        query_parameters: [field_list, limit, offset]
+        fields_filterable: {  }
+        fields_sortable: {  }
+        resource_id: true
+    Location:
+        url_single: location
+        url_collection: locations
+        values_single: [aliases, api_detail_url, date_added, date_last_updated, deck, description, first_appeared_in_game, id, image, name, site_detail_url]
+        values_collection: [aliases, api_detail_url, date_added, date_last_updated, deck, description, first_appeared_in_game, id, image, name, site_detail_url]
+        query_parameters: [field_list, limit, offset, sort, filter]
+        fields_filterable: [aliases, date_added, date_last_updated, id, name]
+        fields_sortable: [date_added, date_last_updated, id, name]
+        resource_id: true
+    Object:
+        url_single: object
+        url_collection: objects
+        values_single: [aliases, api_detail_url, characters, companies, concepts, date_added, date_last_updated, deck, description, first_appeared_in_game, franchises, games, id, image, locations, name, objects, people, site_detail_url]
+        values_collection: [aliases, api_detail_url, date_added, date_last_updated, deck, description, first_appeared_in_game, id, image, name, site_detail_url]
+        query_parameters: [field_list, limit, offset, sort, filter]
+        fields_filterable: [aliases, date_added, date_last_updated, id, name]
+        fields_sortable: [date_added, date_last_updated, id, name]
+        resource_id: true
+    Person:
+        url_single: person
+        url_collection: people
+        values_single: [aliases, api_detail_url, birth_date, characters, concepts, country, date_added, date_last_updated, death_date, deck, description, first_credited_game, franchises, games, gender, hometown, id, image, locations, name, objects, people, site_detail_url]
+        values_collection: [aliases, api_detail_url, birth_date, country, date_added, date_last_updated, death_date, deck, description, first_credited_game, gender, hometown, id, image, name, site_detail_url]
+        query_parameters: [field_list, limit, offset, sort, filter]
+        fields_filterable: [aliases, birth_date, country, date_added, date_last_updated, death_date, gender, hometown, id, name]
+        fields_sortable: [birth_date, country, date_added, date_last_updated, death_date, gender, hometown, id, name]
+        resource_id: true
+    Platform:
+        url_single: platform
+        url_collection: platforms
+        values_single: [abbreviation, api_detail_url, company, date_added, date_last_updated, deck, description, id, image, install_base, name, online_support, original_price, release_date, site_detail_url]
+        values_collection: [abbreviation, api_detail_url, company, date_added, date_last_updated, deck, description, id, image, install_base, name, online_support, original_price, release_date, site_detail_url]
+        query_parameters: [field_list, limit, offset, sort, filter]
+        fields_filterable: [abbreviation, company, date_added, date_last_updated, id, install_base, name, online_support, original_price, release_date]
+        fields_sortable: [abbreviation, date_added, date_last_updated, id, install_base, name, online_support, original_price, release_date]
+        resource_id: true
+    Promo:
+        url_single: promo
+        url_collection: promos
+        values_single: [api_detail_url, date_added, deck, id, image, link, name, resource_type, user]
+        values_collection: [api_detail_url, date_added, deck, id, image, link, name, resource_type, user]
+        query_parameters: [field_list, limit, offset, sort, filter]
+        fields_filterable: [date_added, id, name]
+        fields_sortable: [date_added, id, name]
+        resource_id: true
+    RatingBoard:
+        url_single: rating_board
+        url_collection: rating_boards
+        values_single: [api_detail_url, date_added, date_last_updated, deck, description, id, image, name, region, site_detail_url]
+        values_collection: [api_detail_url, date_added, date_last_updated, deck, description, id, image, name, site_detail_url]
+        query_parameters: [field_list, limit, offset, sort, filter]
+        fields_filterable: [id, name]
+        fields_sortable: [id, name]
+        resource_id: true
+    Region:
+        url_single: region
+        url_collection: regions
+        values_single: [api_detail_url, date_added, date_last_updated, deck, description, id, image, name, rating_boards, site_detail_url]
+        values_collection: [api_detail_url, date_added, date_last_updated, deck, description, id, image, name, site_detail_url]
+        query_parameters: [field_list, limit, offset, sort, filter]
+        fields_filterable: [id, name]
+        fields_sortable: [id, name]
+        resource_id: true
+    Release:
+        url_single: release
+        url_collection: releases
+        values_single: [api_detail_url, date_added, date_last_updated, deck, description, developers, expected_release_day, expected_release_month, expected_release_quarter, expected_release_year, game, game_rating, id, image, images, name, platform, product_code_type, product_code_value, publishers, region, release_date, site_detail_url]
+        values_collection: [api_detail_url, date_added, date_last_updated, deck, description, expected_release_day, expected_release_month, expected_release_quarter, expected_release_year, game, game_rating, id, image, name, platform, product_code_type, product_code_value, region, release_date, site_detail_url]
+        query_parameters: [field_list, limit, offset, platforms, sort, filter]
+        fields_filterable: [date_added, date_last_updated, expected_release_month, expected_release_quarter, expected_release_year, game, game_rating, id, name, platform, product_code_type, product_code_value, region, release_date]
+        fields_sortable: [date_added, date_last_updated, game, game_rating, id, name, platform, product_code_type, product_code_value, region, release_date]
+        resource_id: true
+    Review:
+        url_single: review
+        url_collection: reviews
+        values_single: [api_detail_url, deck, description, dlc_name, game, platforms, publish_date, release, reviewer, score, site_detail_url]
+        values_collection: [api_detail_url, deck, description, dlc_name, game, publish_date, release, reviewer, score, site_detail_url]
+        query_parameters: [field_list, limit, offset, sort, filter]
+        fields_filterable: [dlc_name, game, publish_date, reviewer, score]
+        fields_sortable: [dlc_name, game, publish_date, reviewer, score]
+        resource_id: true
+    Search:
+        url_single: null
+        url_collection: search
+        values_single: []
+        values_collection: [resource_type]
+        query_parameters: [field_list, limit, page, query, resources, subscriber_only]
+        fields_filterable: []
+        fields_sortable: []
+        resource_id: false
+    Theme:
+        url_single: theme
+        url_collection: themes
+        values_single: [api_detail_url, id, name, site_detail_url]
+        values_collection: [api_detail_url, id, name, site_detail_url]
+        query_parameters: [field_list, limit, offset, sort, filter]
+        fields_filterable: [id, name]
+        fields_sortable: [id, name]
+        resource_id: true
+    Type:
+        url_single: null
+        url_collection: types
+        values_single: []
+        values_collection: [detail_resource_name, id, list_resource_name]
+        query_parameters: []
+        fields_filterable: []
+        fields_sortable: []
+        resource_id: false
+    UserReview:
+        url_single: user_review
+        url_collection: user_reviews
+        values_single: [api_detail_url, date_added, date_last_updated, deck, description, game, reviewer, score, site_detail_url]
+        values_collection: [api_detail_url, date_added, date_last_updated, deck, description, game, reviewer, score, site_detail_url]
+        query_parameters: [field_list, game, limit, offset, sort, filter]
+        fields_filterable: [date_added, date_last_updated, game, reviewer, score]
+        fields_sortable: [date_added, date_last_updated, reviewer, score]
+        resource_id: true
+    Video:
+        url_single: video
+        url_collection: videos
+        values_single: [api_detail_url, deck, hd_url, high_url, id, image, length_seconds, low_url, name, publish_date, site_detail_url, url, user, youtube_id]
+        values_collection: [api_detail_url, deck, hd_url, high_url, id, image, length_seconds, low_url, name, publish_date, site_detail_url, url, user, video_type, youtube_id]
+        query_parameters: [field_list, limit, offset, sort, subscriber_only, video_type, filter]
+        fields_filterable: [id, length_seconds, name, publish_date, user, video_type]
+        fields_sortable: [id, length_seconds, name, publish_date, user, video_type]
+        resource_id: true
+    VideoType:
+        url_single: video_type
+        url_collection: video_types
+        values_single: [api_detail_url, deck, id, name, site_detail_url]
+        values_collection: [api_detail_url, deck, id, name, site_detail_url]
+        query_parameters: [field_list, limit, offset]
+        fields_filterable: {  }
+        fields_sortable: {  }
+        resource_id: true

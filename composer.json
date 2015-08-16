@@ -1,0 +1,25 @@
+{
+    "name": "dborsatto/php-giantbomb",
+    "description": "A PHP library that acts as a wrapper for the GiantBomb API.",
+    "require": {
+        "guzzlehttp/guzzle": "^6.0",
+        "symfony/yaml": "^2.7"
+    },
+    "require-dev": {
+        "monolog/monolog": "^1.15",
+        "phpunit/phpunit": "^4.8"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Davide Borsatto",
+            "email": "davide.borsatto@gmail.com",
+            "homepage": "https://github.com/dborsatto"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "dborsatto\\GiantBomb\\": "src"
+        }
+    }
+}
