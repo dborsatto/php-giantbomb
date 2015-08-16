@@ -34,7 +34,7 @@ class Manager
      *
      * @param Config $config
      */
-    public function __construct(Config $config)
+    public function __construct(ConfigInterface $config)
     {
         $this->config = $config;
         $this->initializeRepositories($config->getRepositories());
@@ -94,7 +94,7 @@ class Manager
     }
 
     /**
-     * Shortcut for seaching.
+     * Shortcut for searching.
      *
      * @param string $string
      * @param string $resources

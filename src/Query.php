@@ -62,9 +62,23 @@ class Query
      *
      * @param Repository $repository
      */
-    public function __construct(Repository $repository)
+    public function __construct(Repository $repository = null)
+    {
+        $this->setRepository($repository);
+    }
+
+    /**
+     * Sets the current Repository.
+     *
+     * @param Repository $repository
+     *
+     * @return Query
+     */
+    public function setRepository(Repository $repository = null)
     {
         $this->repository = $repository;
+
+        return $this;
     }
 
     /**
@@ -147,6 +161,10 @@ class Query
      */
     public function find()
     {
+        if (!$this->repository) {
+            throw new RuntimeException('The current Query object is not tied to any Repository');
+        }
+
         return $this->repository->find($this->compileParameters());
     }
 
@@ -157,6 +175,10 @@ class Query
      */
     public function findOne()
     {
+        if (!$this->repository) {
+            throw new RuntimeException('The current Query object is not tied to any Repository');
+        }
+
         return $this->repository->findOne($this->compileParameters());
     }
 
@@ -165,7 +187,7 @@ class Query
      *
      * @return array
      */
-    private function compileParameters()
+    public function compileParameters()
     {
         $return = array(
             'query' => array(),

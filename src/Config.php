@@ -15,7 +15,7 @@ namespace dborsatto\GiantBomb;
  *
  * @author Davide Borsatto <davide.borsatto@gmail.com>
  */
-class Config
+class Config implements ConfigInterface
 {
     /**
      * The API key.

@@ -32,23 +32,15 @@ class Model
     protected $values = array();
 
     /**
-     * Initializes the model.
+     * Class constructor.
      *
      * @param string $name
      * @param array  $values
-     *
-     * @return Model
      */
-    public function initialize($name, $values)
+    public function __construct($name, $values)
     {
-        if ($this->name) {
-            throw new Exception(sprintf('Object %s has already been initialized', $this->name));
-        }
-
         $this->name = $name;
         $this->values = $values;
-
-        return $this;
     }
 
     /**
