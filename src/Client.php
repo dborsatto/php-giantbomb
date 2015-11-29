@@ -11,6 +11,9 @@
 namespace DBorsatto\GiantBomb;
 
 use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Psr7\Response;
+use Doctrine\Common\Cache\CacheProvider;
+use Doctrine\Common\Cache\VoidCache;
 
 /**
  * Class Client.
@@ -30,14 +33,47 @@ class Client
     private $repositories = array();
 
     /**
+     * @var Cache
+     */
+    private $cache = null;
+
+    /**
      * Class constructor.
      *
      * @param Config $config
      */
-    public function __construct(Config $config)
+    public function __construct(Config $config, CacheProvider $cache = null)
     {
         $this->config = $config;
+        $this->setCacheProvider($cache);
         $this->initializeRepositories($config->getRepositories());
+    }
+
+    /**
+     * Sets the current cache provider
+     *
+     * @param CacheProvider $cache
+     *
+     * @return Client
+     */
+    public function setCacheProvider(CacheProvider $cache = null)
+    {
+        if (!$cache) {
+            $cache = new VoidCache();
+        }
+        $this->cache = $cache;
+
+        return $this;
+    }
+
+    /**
+     * Returns the current cache provider
+     *
+     * @return CacheProvider
+     */
+    public function getCacheProvider()
+    {
+        return $this->cache;
     }
 
     /**
@@ -62,7 +98,11 @@ class Client
     public function getRepository($name)
     {
         if (!isset($this->repositories[$name])) {
-            throw new \InvalidArgumentException(sprintf('The name %s is not a valid repository, try one of %s', $name, implode(', ', array_keys($this->repositories))));
+            throw new \InvalidArgumentException(sprintf(
+                'The name %s is not a valid repository, try one of %s',
+                $name,
+                implode(', ', array_keys($this->repositories))
+            ));
         }
 
         return $this->repositories[$name];
@@ -115,41 +155,89 @@ class Client
      * Loads a HTTP resource.
      *
      * @param string $url
-     * @param array  $parameters
+     * @param array $parameters
      *
      * @return array
      */
     public function loadResource($url, $parameters)
     {
-        $parameters['format'] = 'json';
-        $parameters['api_key'] = $this->config->getApiKey();
-        $query = '';
-        foreach ($parameters as $name => $value) {
-            $query .= $name.'='.$value.'&';
+        $signature = $this->createSignature($url, $parameters);
+        if ($this->cache->contains($signature)) {
+            return $this->cache->fetch($signature);
         }
 
-        $url = $this->config->getApiEndpoint().$url.'?'.$query;
+        $parameters['format'] = 'json';
+        $parameters['api_key'] = $this->config->getApiKey();
+        $url = $this->config->getApiEndpoint().$this->buildQueryUrl($url, $parameters);
 
         $client = new GuzzleClient();
-        $response = $client->get($url);
+        $body = $this->processResponse($client->get($url));
 
+        $this->cache->save($signature, $body['results']);
+
+        return $body['results'];
+    }
+
+    /**
+     * Checks if the Response object is valid, and throws an exception if not
+     *
+     * @param  Response $response
+     *
+     * @return array The response body
+     */
+    private function processResponse(Response $response)
+    {
         if ($response->getStatusCode() != 200) {
-            throw new \RuntimeException('Query to GiantBomb did not result in an appropriate response code');
+            throw new \RuntimeException('Query to the API server did not result in an appropriate response code');
         }
         $contentType = $response->getHeader('content-type');
         if (is_array($contentType)) {
             $contentType = $contentType[0];
         }
         if ($contentType != 'application/json; charset=utf-8') {
-            throw new \RuntimeException(sprintf('Query to GiantBomb did not provide the right type of data (content type received %s)', $contentType));
+            throw new \RuntimeException(sprintf(
+                'Query to the API server did not provide the right type of data (content type received %s)',
+                $contentType
+            ));
         }
 
         $body = json_decode($response->getBody()->getContents(), true);
 
         if ($body['error'] != 'OK') {
-            throw new \RuntimeException('Query to GiantBomb did not result in an appropriate response code');
+            throw new \RuntimeException('Query to the API server did not result in an appropriate response code');
         }
 
-        return $body['results'];
+        return $body;
+    }
+
+    /**
+     * Builds an url using the local Config and the given parameters
+     *
+     * @param  string $url
+     * @param  array $parameters
+     *
+     * @return string
+     */
+    private function buildQueryUrl($url, $parameters)
+    {
+        $query = '';
+        foreach ($parameters as $name => $value) {
+            $query .= $name.'='.$value.'&';
+        }
+
+        return $url.'?'.$query;
+    }
+
+    /**
+     * Creates a signature for the given request
+     *
+     * @param  string $url
+     * @param  array $parameters
+     *
+     * @return string
+     */
+    private function createSignature($url, $parameters)
+    {
+        return 'giantbomb-'.substr(sha1($this->buildQueryUrl($url, $parameters)), 0, 7);
     }
 }

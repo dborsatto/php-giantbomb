@@ -3,7 +3,8 @@
     "description": "A PHP library that acts as a wrapper for the GiantBomb API.",
     "require": {
         "guzzlehttp/guzzle": "^6.0",
-        "symfony/yaml": "^2.7"
+        "symfony/yaml": "^2.7",
+        "doctrine/cache": "^1.4"
     },
     "require-dev": {
         "monolog/monolog": "^1.15",
