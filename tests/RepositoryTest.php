@@ -28,14 +28,13 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         $model = 'Game';
         $repoConfig = $repositories[$model];
         $stubClient = $this->getMockBuilder('\DBorsatto\GiantBomb\Client')
-            ->setConstructorArgs(array($config))
+            ->setConstructorArgs(array($config, null))
             ->getMock();
         $stubClient->method('loadResource')
-            ->will($this->returnCallback(function ($url, $parameters, $type) {
+            ->will($this->returnCallback(function ($url, $parameters) {
                 return array(
                     array('url' => $url),
                     array('parameters' => $parameters),
-                    array('type' => $type),
                 );
             }));
 
@@ -45,12 +44,12 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
     public function testReturnValues()
     {
         $models = $this->repository->query()->find();
-        $this->assertEquals(count($models), 3);
-        $this->assertEquals($models[2]->get('type'), 'collection');
+        $this->assertEquals(count($models), 2);
+        $this->assertTrue(is_array($models[1]->get('parameters')));
 
         $models = $this->repository->find(new Query());
-        $this->assertEquals(count($models), 3);
-        $this->assertEquals($models[2]->get('type'), 'collection');
+        $this->assertEquals(count($models), 2);
+        $this->assertTrue(is_array($models[1]->get('parameters')));
 
         $query = new Query();
         $query->addFilterBy('name', 'name1');
@@ -59,8 +58,8 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         $query->setParameter('platforms', 'ps3');
 
         $models = $this->repository->find($query);
-        $this->assertEquals(count($models), 3);
-        $this->assertEquals($models[2]->get('type'), 'collection');
+        $this->assertEquals(count($models), 2);
+        $this->assertTrue(is_array($models[1]->get('parameters')));
 
         $query = new Query();
         $query->setResourceId('id');
