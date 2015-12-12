@@ -2,13 +2,12 @@
     "name": "dborsatto/php-giantbomb",
     "description": "A PHP library that acts as a wrapper for the GiantBomb API.",
     "require": {
-        "guzzlehttp/guzzle": "^6.0",
-        "symfony/yaml": "^2.7",
-        "doctrine/cache": "^1.4"
+        "guzzlehttp/guzzle": "^6.1",
+        "symfony/yaml": "^3.0",
+        "doctrine/cache": "^1.5"
     },
     "require-dev": {
-        "monolog/monolog": "^1.15",
-        "phpunit/phpunit": "^4.8"
+        "phpunit/phpunit": "^5.1"
     },
     "license": "MIT",
     "authors": [
@@ -23,5 +22,5 @@
             "DBorsatto\\GiantBomb\\Test\\": "tests",
             "DBorsatto\\GiantBomb\\": "src"
         }
-    }
+    },
 }

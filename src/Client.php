@@ -38,15 +38,26 @@ class Client
     private $cache = null;
 
     /**
+     * @var GuzzleClient
+     */
+    private $guzzle = null;
+
+    /**
      * Class constructor.
      *
      * @param Config $config
+     * @param CacheProvider $cache
+     * @param GuzzleClient $guzzle
      */
-    public function __construct(Config $config, CacheProvider $cache = null)
+    public function __construct(Config $config, CacheProvider $cache = null, GuzzleClient $guzzle = null)
     {
         $this->config = $config;
         $this->setCacheProvider($cache);
         $this->initializeRepositories($config->getRepositories());
+        if (!$guzzle) {
+            $guzzle = new GuzzleClient();
+        }
+        $this->guzzle = $guzzle;
     }
 
     /**
@@ -170,8 +181,8 @@ class Client
         $parameters['api_key'] = $this->config->getApiKey();
         $url = $this->config->getApiEndpoint().$this->buildQueryUrl($url, $parameters);
 
-        $client = new GuzzleClient();
-        $body = $this->processResponse($client->get($url));
+        $response = $this->guzzle->request('GET', $url);
+        $body = $this->processResponse($response);
 
         $this->cache->save($signature, $body['results']);
 
@@ -190,18 +201,11 @@ class Client
         if ($response->getStatusCode() != 200) {
             throw new \RuntimeException('Query to the API server did not result in an appropriate response code');
         }
-        $contentType = $response->getHeader('content-type');
-        if (is_array($contentType)) {
-            $contentType = $contentType[0];
-        }
-        if ($contentType != 'application/json; charset=utf-8') {
-            throw new \RuntimeException(sprintf(
-                'Query to the API server did not provide the right type of data (content type received %s)',
-                $contentType
-            ));
-        }
 
         $body = json_decode($response->getBody()->getContents(), true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \RuntimeException('There was an error parsing the response JSON: '.json_last_error_msg());
+        }
 
         if ($body['error'] != 'OK') {
             throw new \RuntimeException('Query to the API server did not result in an appropriate response code');

@@ -62,7 +62,7 @@ class Model
      */
     public function get($value)
     {
-        if (!$this->isValidValue($value)) {
+        if (!$this->has($value)) {
             throw new \InvalidArgumentException(sprintf(
                 'Value %s is not a valid key, expecting one of %s',
                 $value,
@@ -111,7 +111,7 @@ class Model
      *
      * @return bool
      */
-    protected function isValidValue($value)
+    public function has($value)
     {
         return array_key_exists($value, $this->values);
     }
