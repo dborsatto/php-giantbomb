@@ -32,6 +32,7 @@ $client->setCacheProvider($cache);
 
 // Alternatively you can pass a CacheProvider instance as the second parameter of the Client's constructor
 // $client = new DBorsatto\GiantBomb\Client($config, $cache);
+
 // If no CacheProvider is configured, Doctrine\Common\Cache\VoidCache will be used
 // You can still flush the current cache by invoking
 // $client->getCacheProvider()->flush();

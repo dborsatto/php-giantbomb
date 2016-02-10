@@ -165,7 +165,7 @@ class Query
      */
     public function find(Repository $repository = null)
     {
-        if (!$repository and !($repository = $this->repository)) {
+        if (!$repository && !($repository = $this->repository)) {
             throw new \RuntimeException('The current Query object is not tied to any Repository');
         }
 
@@ -181,7 +181,7 @@ class Query
      */
     public function findOne(Repository $repository = null)
     {
-        if (!$repository and !($repository = $this->repository)) {
+        if (!$repository && !($repository = $this->repository)) {
             throw new \RuntimeException('The current Query object is not tied to any Repository');
         }
 

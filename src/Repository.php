@@ -210,21 +210,21 @@ class Repository
     private function formatParameters($parameters, $type)
     {
         // Checks that the given Query is compatible with the Repository
-        if ($type == 'single' and !$this->urlSingle) {
+        if ($type == 'single' && !$this->urlSingle) {
             throw new \InvalidArgumentException(sprintf('Trying to perform a single-type query on repository %s, which supports only collection type', $this->name));
         }
-        if ($type == 'collection' and !$this->urlCollection) {
+        if ($type == 'collection' && !$this->urlCollection) {
             throw new \InvalidArgumentException(sprintf('Trying to perform a collection-type query on repository %s, which supports only single type', $this->name));
         }
 
         // Finds possible problems with the presence of a resource ID, or lack thereof
-        if (!$this->resourceId and $parameters['resource_id']) {
+        if (!$this->resourceId && $parameters['resource_id']) {
             throw new \InvalidArgumentException(sprintf('Trying to query with a resource ID, but the repository %s does not provide support for them', $this->name));
         }
-        if ($type == 'single' and !$parameters['resource_id']) {
+        if ($type == 'single' && !$parameters['resource_id']) {
             throw new \InvalidArgumentException(sprintf('Trying to query a single element without providing a resource ID for repository %s', $this->name));
         }
-        if ($type == 'collection' and $parameters['resource_id']) {
+        if ($type == 'collection' && $parameters['resource_id']) {
             throw new \InvalidArgumentException(sprintf('Trying to query a collection element by providing a resource ID for repository %s', $this->name));
         }
 
@@ -274,7 +274,7 @@ class Repository
             if (!in_array($parameter, $this->queryParameters)) {
                 throw new \InvalidArgumentException(sprintf('Parameter %s is not a valid query parameters for repository %s', $parameter, $this->name));
             }
-            if (!is_string($value) and !is_numeric($value)) {
+            if (!is_string($value) && !is_numeric($value)) {
                 throw new \InvalidArgumentException(sprintf('Value for parameter %s is not a valid type, must be either a string or a number, %s given', $parameter, gettype($value)));
             }
             $returnParameters[$parameter] = $value;
