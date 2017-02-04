@@ -3,8 +3,9 @@
 namespace DBorsatto\GiantBomb\Test;
 
 use DBorsatto\GiantBomb\Config;
+use PHPUnit\Framework\TestCase;
 
-class ConfigTest extends \PHPUnit_Framework_TestCase
+class ConfigTest extends TestCase
 {
     /**
      * Stub API key
@@ -25,11 +26,11 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
      *
      * @var array
      */
-    private $repositories = array(
-        'Model1' => array(),
-        'Model2' => array(),
-        'Model3' => array(),
-    );
+    private $repositories = [
+        'Model1' => [],
+        'Model2' => [],
+        'Model3' => [],
+    ];
 
     /**
      * @var Config
@@ -41,10 +42,10 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->config = new Config($this->apiKey, array(
-                'api_endpoint' => $this->apiEndpoint,
-                'repositories' => $this->repositories)
-            );
+        $this->config = new Config($this->apiKey, [
+            'api_endpoint' => $this->apiEndpoint,
+            'repositories' => $this->repositories
+        ]);
     }
 
     public function testApiKey()

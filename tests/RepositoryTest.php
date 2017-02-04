@@ -5,8 +5,9 @@ namespace DBorsatto\GiantBomb\Test;
 use DBorsatto\GiantBomb\Config;
 use DBorsatto\GiantBomb\Query;
 use DBorsatto\GiantBomb\Repository;
+use PHPUnit\Framework\TestCase;
 
-class RepositoryTest extends \PHPUnit_Framework_TestCase
+class RepositoryTest extends TestCase
 {
     /**
      * @var Repository
@@ -28,14 +29,14 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         $model = 'Game';
         $repoConfig = $repositories[$model];
         $stubClient = $this->getMockBuilder('\DBorsatto\GiantBomb\Client')
-            ->setConstructorArgs(array($config, null))
+            ->setConstructorArgs([$config, null])
             ->getMock();
         $stubClient->method('loadResource')
             ->will($this->returnCallback(function ($url, $parameters) {
-                return array(
-                    array('url' => $url),
-                    array('parameters' => $parameters),
-                );
+                return [
+                    ['url' => $url],
+                    ['parameters' => $parameters],
+                ];
             }));
 
         return new Repository($stubClient, $model, $repoConfig);
@@ -54,7 +55,7 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         $query = new Query();
         $query->addFilterBy('name', 'name1');
         $query->sortBy('name', 'desc');
-        $query->setFieldList(array('id', 'name', 'description'));
+        $query->setFieldList(['id', 'name', 'description']);
         $query->setParameter('platforms', 'ps3');
 
         $models = $this->repository->find($query);
@@ -98,7 +99,7 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
     public function testInvalidField()
     {
         $query = new Query();
-        $query->setFieldList(array('invalid'));
+        $query->setFieldList(['invalid']);
         $this->repository->find($query);
     }
 
@@ -127,14 +128,14 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidResourceIdPresenceNotAllowedByRepository()
     {
-        $repoApiConfig = array(
+        $repoApiConfig = [
             'api_endpoint' => '',
-            'repositories' => array('Game' => array(
+            'repositories' => ['Game' => [
                 'url_single' => 'url',
                 'url_collection' => 'url',
                 'resource_id' => false,
-            )),
-        );
+            ]],
+        ];
         $config = new Config('MyApiKey', $repoApiConfig);
         $query = new Query();
         $query->setResourceId('invalid');
@@ -156,7 +157,7 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
     public function testInvalidParameterValue()
     {
         $query = new Query();
-        $query->setParameter('limit', array());
+        $query->setParameter('limit', []);
         $this->repository->find($query);
     }
 
@@ -165,13 +166,13 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidQueryToRepositoryWithoutUrlSingle()
     {
-        $repoApiConfig = array(
+        $repoApiConfig = [
             'api_endpoint' => '',
-            'repositories' => array('Game' => array(
+            'repositories' => ['Game' => [
                 'url_single' => null,
                 'url_collection' => 'url'
-            )),
-        );
+            ]],
+        ];
         $config = new Config('MyApiKey', $repoApiConfig);
         $this->createRepository($config)->findOne(new Query());
     }
@@ -181,13 +182,13 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidQueryToRepositoryWithoutUrlCollection()
     {
-        $repoApiConfig = array(
+        $repoApiConfig = [
             'api_endpoint' => '',
-            'repositories' => array('Game' => array(
+            'repositories' => ['Game' => [
                 'url_single' => 'url',
                 'url_collection' => null
-            )),
-        );
+            ]],
+        ];
         $config = new Config('MyApiKey', $repoApiConfig);
         $this->createRepository($config)->find(new Query());
     }

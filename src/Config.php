@@ -38,7 +38,7 @@ class Config
      *
      * @var string
      */
-    private $repositories = array();
+    private $repositories = [];
 
     /**
      * Constructor.

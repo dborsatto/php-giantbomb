@@ -3,8 +3,9 @@
 namespace DBorsatto\GiantBomb\Test;
 
 use DBorsatto\GiantBomb\Model;
+use PHPUnit\Framework\TestCase;
 
-class ModelTest extends \PHPUnit_Framework_TestCase
+class ModelTest extends TestCase
 {
     /**
      * @var Model
@@ -16,12 +17,12 @@ class ModelTest extends \PHPUnit_Framework_TestCase
      *
      * @var array
      */
-    private $testValues = array(
+    private $testValues = [
         'key1' => 'value2',
-        'key3' => array('value4', 'value5'),
+        'key3' => ['value4', 'value5'],
         'key6' => 7,
         'key8' => null,
-    );
+    ];
 
     /**
      * {@inheritdoc}
@@ -39,7 +40,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
     public function testValidValues()
     {
         $this->assertEquals($this->model->get('key1'), 'value2');
-        $this->assertEquals($this->model->get('key3'), array('value4', 'value5'));
+        $this->assertEquals($this->model->get('key3'), ['value4', 'value5']);
         $this->assertEquals($this->model->get('key6'), 7);
         $this->assertEquals($this->model->get('key8'), null);
     }
@@ -55,7 +56,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
     public function testMagicFunctionWithValidValues()
     {
         $this->assertEquals($this->model->key1, 'value2');
-        $this->assertEquals($this->model->key3, array('value4', 'value5'));
+        $this->assertEquals($this->model->key3, ['value4', 'value5']);
         $this->assertEquals($this->model->key6, 7);
         $this->assertEquals($this->model->key8, null);
     }
@@ -71,7 +72,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
     public function testMagicGetters()
     {
         $this->assertEquals($this->model->getKey1(), 'value2');
-        $this->assertEquals($this->model->getKey3(), array('value4', 'value5'));
+        $this->assertEquals($this->model->getKey3(), ['value4', 'value5']);
         $this->assertEquals($this->model->getKey6(), 7);
         $this->assertEquals($this->model->getKey8(), null);
     }

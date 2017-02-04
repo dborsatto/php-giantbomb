@@ -9,8 +9,9 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use Doctrine\Common\Cache\ArrayCache;
+use PHPUnit\Framework\TestCase;
 
-class ClientTest extends \PHPUnit_Framework_TestCase
+class ClientTest extends TestCase
 {
     /**
      * @var Client
@@ -33,32 +34,9 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
     public function repositoryProvider()
     {
-        return array(
-            array('Accessory'),/*
-            array('Character'),
-            array('Chat'),
-            array('Company'),
-            array('Concept'),
-            array('Franchise'),
-            array('Game'),
-            array('GameRating'),
-            array('Genre'),
-            array('Location'),
-            array('Object'),
-            array('Person'),
-            array('Platform'),
-            array('Promo'),
-            array('RatingBoard'),
-            array('Region'),
-            array('Release'),
-            array('Review'),
-            array('Search'),
-            array('Theme'),
-            array('Type'),
-            array('UserReview'),
-            array('Video'),
-            array('VideoType'),*/
-        );
+        return [
+            ['Accessory'],
+        ];
     }
 
     /**
@@ -97,12 +75,12 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $method->setAccessible(true);
 
         $baseUrl = 'example/';
-        $parameters = array(
+        $parameters = [
             'param1' => 'value1',
             'param2' => 'value2',
-        );
+        ];
 
-        $url = $method->invokeArgs($this->client, array($baseUrl, $parameters));
+        $url = $method->invokeArgs($this->client, [$baseUrl, $parameters]);
         $this->assertEquals($url, 'example/?param1=value1&param2=value2&');
     }
 
@@ -113,12 +91,12 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $method->setAccessible(true);
 
         $baseUrl = 'example/';
-        $parameters = array(
+        $parameters = [
             'param1' => 'value1',
             'param2' => 'value2',
-        );
+        ];
 
-        $signature = $method->invokeArgs($this->client, array($baseUrl, $parameters));
+        $signature = $method->invokeArgs($this->client, [$baseUrl, $parameters]);
         $this->assertEquals($signature, 'giantbomb-faed9fe');
     }
 
@@ -126,14 +104,14 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     {
         $config = new Config('MyApiKey');
         $stubClient = $this->getMockBuilder('\DBorsatto\GiantBomb\Client')
-            ->setConstructorArgs(array($config, null))
+            ->setConstructorArgs([$config, null])
             ->getMock();
         $stubClient->method('loadResource')
             ->will($this->returnCallback(function ($url, $parameters) {
-                return array(
-                    array('url' => $url),
-                    array('parameters' => $parameters),
-                );
+                return [
+                    ['url' => $url],
+                    ['parameters' => $parameters],
+                ];
             }));
 
         $this->client->getRepository('Game')->setClient($stubClient);
@@ -148,19 +126,19 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
     public function testProcessedResponseSuccess()
     {
-        $mock = new MockHandler(array(
-            new Response(200, array(), json_encode(array('error' => 'OK'))),
-        ));
+        $mock = new MockHandler([
+            new Response(200, [], json_encode(['error' => 'OK'])),
+        ]);
 
         $handler = HandlerStack::create($mock);
-        $guzzle = new GuzzleClient(array('handler' => $handler));
+        $guzzle = new GuzzleClient(['handler' => $handler]);
         $response = $guzzle->request('GET', 'http://www.google.com');
 
         $reflection = new \ReflectionClass(get_class($this->client));
         $method = $reflection->getMethod('processResponse');
         $method->setAccessible(true);
 
-        $value = $method->invokeArgs($this->client, array($response));
+        $value = $method->invokeArgs($this->client, [$response]);
     }
 
     /**
@@ -168,19 +146,19 @@ class ClientTest extends \PHPUnit_Framework_TestCase
      */
     public function testProcessedResponseFailureCode()
     {
-        $mock = new MockHandler(array(
-            new Response(301, array()),
-        ));
+        $mock = new MockHandler([
+            new Response(301, []),
+        ]);
 
         $handler = HandlerStack::create($mock);
-        $guzzle = new GuzzleClient(array('handler' => $handler));
+        $guzzle = new GuzzleClient(['handler' => $handler]);
         $response = $guzzle->request('GET', 'http://www.google.com');
 
         $reflection = new \ReflectionClass(get_class($this->client));
         $method = $reflection->getMethod('processResponse');
         $method->setAccessible(true);
 
-        $value = $method->invokeArgs($this->client, array($response));
+        $value = $method->invokeArgs($this->client, [$response]);
     }
 
     /**
@@ -188,19 +166,19 @@ class ClientTest extends \PHPUnit_Framework_TestCase
      */
     public function testProcessedResponseInvalidFormat()
     {
-        $mock = new MockHandler(array(
-            new Response(200, array(), '[INVALID JSON}'),
-        ));
+        $mock = new MockHandler([
+            new Response(200, [], '[INVALID JSON}'),
+        ]);
 
         $handler = HandlerStack::create($mock);
-        $guzzle = new GuzzleClient(array('handler' => $handler));
+        $guzzle = new GuzzleClient(['handler' => $handler]);
         $response = $guzzle->request('GET', 'http://www.google.com');
 
         $reflection = new \ReflectionClass(get_class($this->client));
         $method = $reflection->getMethod('processResponse');
         $method->setAccessible(true);
 
-        $value = $method->invokeArgs($this->client, array($response));
+        $value = $method->invokeArgs($this->client, [$response]);
     }
 
     /**
@@ -208,35 +186,35 @@ class ClientTest extends \PHPUnit_Framework_TestCase
      */
     public function testProcessedResponseErrorPresent()
     {
-        $mock = new MockHandler(array(
-            new Response(200, array(), json_encode(array('error' => 'KO'))),
-        ));
+        $mock = new MockHandler([
+            new Response(200, [], json_encode(['error' => 'KO'])),
+        ]);
 
         $handler = HandlerStack::create($mock);
-        $guzzle = new GuzzleClient(array('handler' => $handler));
+        $guzzle = new GuzzleClient(['handler' => $handler]);
         $response = $guzzle->request('GET', 'http://www.google.com');
 
         $reflection = new \ReflectionClass(get_class($this->client));
         $method = $reflection->getMethod('processResponse');
         $method->setAccessible(true);
 
-        $value = $method->invokeArgs($this->client, array($response));
+        $value = $method->invokeArgs($this->client, [$response]);
     }
 
     public function testLoadResource()
     {
-        $mock = new MockHandler(array(
-            new Response(200, array(), json_encode(array('error' => 'OK', 'results' => array()))),
-            new Response(200, array(), json_encode(array('error' => 'OK', 'results' => array()))),
-        ));
+        $mock = new MockHandler([
+            new Response(200, [], json_encode(['error' => 'OK', 'results' => []])),
+            new Response(200, [], json_encode(['error' => 'OK', 'results' => []])),
+        ]);
         $handler = HandlerStack::create($mock);
-        $guzzle = new GuzzleClient(array('handler' => $handler));
+        $guzzle = new GuzzleClient(['handler' => $handler]);
 
         $cache = new ArrayCache();
         $config = new Config('MyApiKey');
         $client = new Client($config, $cache, $guzzle);
-        $client->loadResource('http://www.google.com', array('test' => true));
+        $client->loadResource('http://www.google.com', ['test' => true]);
         // Test "cached" result
-        $client->loadResource('http://www.google.com', array('test' => true));
+        $client->loadResource('http://www.google.com', ['test' => true]);
     }
 }

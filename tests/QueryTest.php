@@ -3,8 +3,9 @@
 namespace DBorsatto\GiantBomb\Test;
 
 use DBorsatto\GiantBomb\Query;
+use PHPUnit\Framework\TestCase;
 
-class QueryTest extends \PHPUnit_Framework_TestCase
+class QueryTest extends TestCase
 {
     /**
      * @var Query
@@ -24,7 +25,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
 
         $this->query->sortBy('sort4', 'desc');
 
-        $this->query->setFieldList(array('field5', 'field6', 'field7'));
+        $this->query->setFieldList(['field5', 'field6', 'field7']);
 
         $this->query->setParameter('parameter8', 'value8');
 
@@ -40,16 +41,16 @@ class QueryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(count($parameters['query']), 4);
 
         $this->assertEquals(count($parameters['query']['filter_by']), 3);
-        $this->assertEquals($parameters['query']['filter_by'], array(
+        $this->assertEquals($parameters['query']['filter_by'], [
             'filter1' => 'value1',
             'filter2' => 'value2',
             'filter3' => 'value3',
-        ));
+        ]);
 
         $this->assertEquals($parameters['query']['sort_by'][0], 'sort4');
         $this->assertEquals($parameters['query']['sort_by'][1], 'desc');
 
-        $this->assertEquals($parameters['query']['field_list'], array('field5', 'field6', 'field7'));
+        $this->assertEquals($parameters['query']['field_list'], ['field5', 'field6', 'field7']);
 
         $this->assertEquals($parameters['query']['parameter8'], 'value8');
     }

@@ -27,7 +27,7 @@ class Query
      *
      * @var array
      */
-    private $filterBy = array();
+    private $filterBy = [];
 
     /**
      * The active sorting field.
@@ -41,7 +41,7 @@ class Query
      *
      * @var array
      */
-    private $fieldList = array();
+    private $fieldList = [];
 
     /**
      * The repository resource ID.
@@ -55,7 +55,7 @@ class Query
      *
      * @var array
      */
-    private $parameters = array();
+    private $parameters = [];
 
     /**
      * Class constructor.
@@ -108,7 +108,7 @@ class Query
      */
     public function sortBy($field, $direction = 'asc')
     {
-        $this->sortBy = array($field, $direction);
+        $this->sortBy = [$field, $direction];
 
         return $this;
     }
@@ -195,10 +195,10 @@ class Query
      */
     public function compileParameters()
     {
-        $return = array(
-            'query' => array(),
+        $return = [
+            'query' => [],
             'resource_id' => $this->resourceId,
-        );
+        ];
 
         if ($this->filterBy) {
             $return['query']['filter_by'] = $this->filterBy;

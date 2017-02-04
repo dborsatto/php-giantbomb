@@ -30,7 +30,7 @@ class Client
     /**
      * @var array
      */
-    private $repositories = array();
+    private $repositories = [];
 
     /**
      * @var Cache

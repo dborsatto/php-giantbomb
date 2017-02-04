@@ -29,7 +29,7 @@ class Model
      *
      * @var array
      */
-    protected $values = array();
+    protected $values = [];
 
     /**
      * Class constructor.
