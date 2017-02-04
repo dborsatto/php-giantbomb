@@ -6,7 +6,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @copyright (c) 2015, Davide Borsatto
+ * @copyright (c) 2017, Davide Borsatto
  */
 namespace DBorsatto\GiantBomb;
 
@@ -52,7 +52,7 @@ class Config
 
         // If no configuration is provided, loads the default
         if (!$config) {
-            $config = Yaml::parse(file_get_contents(__DIR__.'/Resources/config/api.yml'));
+            $config = json_decode(file_get_contents(__DIR__.'/Resources/config/api.json'), true);
         }
 
         $this->apiEndpoint = $config['api_endpoint'];
