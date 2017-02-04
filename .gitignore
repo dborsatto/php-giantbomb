@@ -1,5 +1,6 @@
-composer.phar
-api_key.php
-composer.lock
-vendor/
 build/
+vendor/
+.DS_STORE
+composer.phar
+composer.lock
+phpunit.xml
