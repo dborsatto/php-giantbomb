@@ -19,11 +19,6 @@ class ClientTest extends TestCase
     private $client;
 
     /**
-     * @var GuzzleClient
-     */
-    private $guzzle;
-
-    /**
      * {@inheritdoc}
      */
     protected function setUp()
@@ -37,6 +32,14 @@ class ClientTest extends TestCase
         return [
             ['Accessory'],
         ];
+    }
+
+    private function createGuzzleMock($responses)
+    {
+        $mock = new MockHandler($responses);
+        $handler = HandlerStack::create($mock);
+
+        return new GuzzleClient(['handler' => $handler]);
     }
 
     /**
@@ -126,19 +129,19 @@ class ClientTest extends TestCase
 
     public function testProcessedResponseSuccess()
     {
-        $mock = new MockHandler([
-            new Response(200, [], json_encode(['error' => 'OK'])),
+        $jsonBody = ['error' => 'OK'];
+        $guzzle = $this->createGuzzleMock([
+            new Response(200, [], json_encode($jsonBody)),
         ]);
 
-        $handler = HandlerStack::create($mock);
-        $guzzle = new GuzzleClient(['handler' => $handler]);
-        $response = $guzzle->request('GET', 'http://www.google.com');
+        $response = $guzzle->request('GET', 'https://www.google.com');
 
         $reflection = new \ReflectionClass(get_class($this->client));
         $method = $reflection->getMethod('processResponse');
         $method->setAccessible(true);
 
         $value = $method->invokeArgs($this->client, [$response]);
+        $this->assertEquals($value, $jsonBody);
     }
 
     /**
@@ -146,19 +149,18 @@ class ClientTest extends TestCase
      */
     public function testProcessedResponseFailureCode()
     {
-        $mock = new MockHandler([
+        $guzzle = $this->createGuzzleMock([
             new Response(301, []),
         ]);
 
-        $handler = HandlerStack::create($mock);
-        $guzzle = new GuzzleClient(['handler' => $handler]);
-        $response = $guzzle->request('GET', 'http://www.google.com');
+        $response = $guzzle->request('GET', 'https://www.google.com');
 
         $reflection = new \ReflectionClass(get_class($this->client));
         $method = $reflection->getMethod('processResponse');
         $method->setAccessible(true);
 
-        $value = $method->invokeArgs($this->client, [$response]);
+        // This should throw an Exception
+        $method->invokeArgs($this->client, [$response]);
     }
 
     /**
@@ -166,19 +168,18 @@ class ClientTest extends TestCase
      */
     public function testProcessedResponseInvalidFormat()
     {
-        $mock = new MockHandler([
+        $guzzle = $this->createGuzzleMock([
             new Response(200, [], '[INVALID JSON}'),
         ]);
 
-        $handler = HandlerStack::create($mock);
-        $guzzle = new GuzzleClient(['handler' => $handler]);
-        $response = $guzzle->request('GET', 'http://www.google.com');
+        $response = $guzzle->request('GET', 'https://www.google.com');
 
         $reflection = new \ReflectionClass(get_class($this->client));
         $method = $reflection->getMethod('processResponse');
         $method->setAccessible(true);
 
-        $value = $method->invokeArgs($this->client, [$response]);
+        // This should throw an Exception
+        $method->invokeArgs($this->client, [$response]);
     }
 
     /**
@@ -186,35 +187,36 @@ class ClientTest extends TestCase
      */
     public function testProcessedResponseErrorPresent()
     {
-        $mock = new MockHandler([
+        $guzzle = $this->createGuzzleMock([
             new Response(200, [], json_encode(['error' => 'KO'])),
         ]);
 
-        $handler = HandlerStack::create($mock);
-        $guzzle = new GuzzleClient(['handler' => $handler]);
-        $response = $guzzle->request('GET', 'http://www.google.com');
+        $response = $guzzle->request('GET', 'https://www.google.com');
 
         $reflection = new \ReflectionClass(get_class($this->client));
         $method = $reflection->getMethod('processResponse');
         $method->setAccessible(true);
 
-        $value = $method->invokeArgs($this->client, [$response]);
+        // This should throw an Exception
+        $method->invokeArgs($this->client, [$response]);
     }
 
     public function testLoadResource()
     {
-        $mock = new MockHandler([
-            new Response(200, [], json_encode(['error' => 'OK', 'results' => []])),
-            new Response(200, [], json_encode(['error' => 'OK', 'results' => []])),
+        $firstResult = ['first_result'];
+        $secondResult = ['second_result'];
+        $guzzle = $this->createGuzzleMock([
+            new Response(200, [], json_encode(['error' => 'OK', 'results' => $firstResult])),
+            new Response(200, [], json_encode(['error' => 'OK', 'results' => $secondResult])),
         ]);
-        $handler = HandlerStack::create($mock);
-        $guzzle = new GuzzleClient(['handler' => $handler]);
 
-        $cache = new ArrayCache();
-        $config = new Config('MyApiKey');
-        $client = new Client($config, $cache, $guzzle);
-        $client->loadResource('http://www.google.com', ['test' => true]);
+        $client = new Client(new Config('MyApiKey'), new ArrayCache(), $guzzle);
+
+        $value = $client->loadResource('https://www.google.com', ['test' => true]);
+        $this->assertEquals($value, $firstResult);
+
         // Test "cached" result
-        $client->loadResource('http://www.google.com', ['test' => true]);
+        $value = $client->loadResource('https://www.google.com', ['test' => true]);
+        $this->assertEquals($value, $firstResult);
     }
 }

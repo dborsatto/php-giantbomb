@@ -19,7 +19,7 @@ class ConfigTest extends TestCase
      *
      * @var string
      */
-    private $apiEndpoint = 'http://www.google.com';
+    private $apiEndpoint = 'https://www.google.com';
 
     /**
      * Stub API repositories
