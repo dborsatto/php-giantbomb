@@ -1,7 +1,10 @@
 # php-giantbomb
 
-[![Latest Stable Version](https://poser.pugx.org/dborsatto/php-giantbomb/v/stable)](https://packagist.org/packages/dborsatto/php-giantbomb)
-[![Build Status](https://secure.travis-ci.org/dborsatto/php-giantbomb.png?branch=master)](http://travis-ci.org/dborsatto/php-giantbomb)
+[![Packagist](https://img.shields.io/packagist/v/dborsatto/php-giantbomb.svg)](https://packagist.org/packages/dborsatto/php-giantbomb)
+[![Packagist](https://img.shields.io/packagist/dt/dborsatto/php-giantbomb.svg)](https://packagist.org/packages/dborsatto/php-giantbomb)
+[![Travis](https://img.shields.io/travis/dborsatto/php-giantbomb.svg)](https://travis-ci.org/dborsatto/php-giantbomb)
+[![Packagist](https://img.shields.io/packagist/l/dborsatto/php-giantbomb.svg)](https://packagist.org/packages/dborsatto/php-giantbomb)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/e630e521-fd39-4ac2-b994-5149d6ffaca4/mini.png)](https://insight.sensiolabs.com/projects/e630e521-fd39-4ac2-b994-5149d6ffaca4)
 
 This is a library that acts as a wrapper for GiantBomb's API.
 
@@ -14,7 +17,8 @@ $ composer require dborsatto/php-giantbomb
 ```
 
 ## Usage
-```php
+
+``` php
 
 $apiKey = 'YouApiKey';
 
