@@ -8,6 +8,7 @@
  *
  * @copyright (c) 2017, Davide Borsatto
  */
+
 namespace DBorsatto\GiantBomb;
 
 /**
@@ -22,21 +23,21 @@ class Repository
      *
      * @var string
      */
-    private $name = null;
+    private $name;
 
     /**
      * The URL for the resource with a single result element.
      *
      * @var string
      */
-    private $urlSingle = null;
+    private $urlSingle;
 
     /**
      * The URL for the resource with a collection result element.
      *
      * @var string
      */
-    private $urlCollection = null;
+    private $urlCollection;
 
     /**
      * Fields contained in the single element response.
@@ -83,10 +84,10 @@ class Repository
     /**
      * @var Client
      */
-    private $client = null;
+    private $client;
 
     /**
-     * The default configuration values
+     * The default configuration values.
      *
      * @var array
      */
@@ -117,7 +118,7 @@ class Repository
         $this->urlSingle = $config['url_single'];
         $this->urlCollection = $config['url_collection'];
 
-        $this->valueSingle = $config['values_single'];
+        $this->valuesSingle = $config['values_single'];
         $this->valuesCollection = $config['values_collection'];
 
         $this->queryParameters = $config['query_parameters'];
@@ -206,99 +207,43 @@ class Repository
      * @param string $type
      *
      * @return array
+     *
+     * @throws \InvalidArgumentException
      */
     private function formatParameters($parameters, $type)
     {
-        // Checks that the given Query is compatible with the Repository
-        if ($type == 'single' && !$this->urlSingle) {
-            throw new \InvalidArgumentException(sprintf(
-                'Trying to perform a single-type query on repository %s, which supports only collection type',
-                $this->name
-            ));
-        }
-        if ($type == 'collection' && !$this->urlCollection) {
-            throw new \InvalidArgumentException(sprintf(
-                'Trying to perform a collection-type query on repository %s, which supports only single type',
-                $this->name
-            ));
-        }
-
-        // Finds possible problems with the presence of a resource ID, or lack thereof
-        if (!$this->resourceId && $parameters['resource_id']) {
-            throw new \InvalidArgumentException(sprintf(
-                'Trying to query with a resource ID, but the repository %s does not provide support for them',
-                $this->name
-            ));
-        }
-        if ($type == 'single' && !$parameters['resource_id']) {
-            throw new \InvalidArgumentException(sprintf(
-                'Trying to query a single element without providing a resource ID for repository %s',
-                $this->name
-            ));
-        }
-        if ($type == 'collection' && $parameters['resource_id']) {
-            throw new \InvalidArgumentException(sprintf(
-                'Trying to query a collection element by providing a resource ID for repository %s',
-                $this->name
-            ));
-        }
+        $this->checkQueryRepositoryCompatibility($type);
+        $this->checkQueryResourceId($parameters, $type);
 
         $returnParameters = [];
 
         foreach ($parameters['query'] as $parameter => $value) {
-            // The parameter is a filter, so it must be checked if it is whitelisted
-            if ($parameter == 'filter_by') {
-                $returnParameters['filter'] = [];
-                foreach ($value as $filterName => $filterValue) {
-                    if (!in_array($filterName, $this->fieldsFilterable)) {
-                        throw new \InvalidArgumentException(sprintf(
-                            'Parameter %s is not available for filtering in repository %s',
-                            $filterName,
-                            $this->name
-                        ));
-                    }
-                    $returnParameters['filter'][] = $filterName.':'.rawurldecode($filterValue);
-                }
-                $returnParameters['filter'] = implode(',', $returnParameters['filter']);
+            // The parameter is a filter,
+            // so it must be checked if it is whitelisted
+            if ($parameter === 'filter_by') {
+                $returnParameters['filter'] = $this->queryAddFilterByParameter($value);
 
                 continue;
             }
 
-            // The parameter is a sorting field, so it must be checked if it is whitelisted
-            if ($parameter == 'sort_by') {
-                if (!in_array($value[0], $this->fieldsSortable)) {
-                    throw new \InvalidArgumentException(sprintf(
-                        'Parameter %s is not available for sorting in repository %s',
-                        $value[0],
-                        $this->name
-                    ));
-                }
-                $returnParameters['sort'] = $value[0].':'.$value[1];
+            // The parameter is a sorting field,
+            // so it must be checked if it is whitelisted
+            if ($parameter === 'sort_by') {
+                $returnParameters['sort'] = $this->queryAddSortByParameter($value);
 
                 continue;
             }
 
-            // The parameter is a list of fields, so it must be checked whether they are supported by the Repository
-            if ($parameter == 'field_list') {
-                $returnParameters['field_list'] = [];
-                $values = $type == 'single' ? $this->valuesSingle : $this->valuesCollection;
-                foreach ($value as $parameter) {
-                    if (!in_array($parameter, $values)) {
-                        throw new \InvalidArgumentException(sprintf(
-                            'Field %s is not available in the field list for repository %s, try one of %s',
-                            $parameter,
-                            $this->name,
-                            implode(', ', $values)
-                        ));
-                    }
-                    $returnParameters['field_list'][] = $parameter;
-                }
-                $returnParameters['field_list'] = implode(',', $returnParameters['field_list']);
+            // The parameter is a list of fields,
+            // so it must be checked whether they are supported by the Repository
+            if ($parameter === 'field_list') {
+                $returnParameters['field_list'] = $this->queryAddFieldList($type, $value);
 
                 continue;
             }
 
-            // The parameter is of any other kind, so it must be checked that it is supported by the Repository
+            // The parameter is of any other kind,
+            // so it must be checked that it is supported by the Repository
             if (!in_array($parameter, $this->queryParameters)) {
                 throw new \InvalidArgumentException(sprintf(
                     'Parameter %s is not a valid query parameters for repository %s',
@@ -320,5 +265,134 @@ class Repository
             'parameters' => $returnParameters,
             'resource_id' => $parameters['resource_id'],
         ];
+    }
+
+    /**
+     * Checks if the parameters are whitelisted and creates the URL string.
+     *
+     * @param array $values
+     *
+     * @return string
+     *
+     * @throws \InvalidArgumentException
+     */
+    private function queryAddFilterByParameter($values)
+    {
+        $filters = [];
+        foreach ($values as $name => $value) {
+            if (!in_array($name, $this->fieldsFilterable)) {
+                throw new \InvalidArgumentException(sprintf(
+                    'Parameter %s is not available for filtering in repository %s',
+                    $name,
+                    $this->name
+                ));
+            }
+            $filters[] = $name.':'.rawurldecode($value);
+        }
+
+        return implode(',', $filters);
+    }
+
+    /**
+     * Checks if the field is sortable and creates the URL string.
+     *
+     * @param array $value
+     *
+     * @return string
+     */
+    private function queryAddSortByParameter($value)
+    {
+        if (!in_array($value[0], $this->fieldsSortable)) {
+            throw new \InvalidArgumentException(sprintf(
+                'Parameter %s is not available for sorting in repository %s',
+                $value[0],
+                $this->name
+            ));
+        }
+
+        return $value[0].':'.$value[1];
+    }
+
+    /**
+     * Checks if the values are in the repository's field list and creates the URL string.
+     *
+     * @param string $type
+     * @param array  $value
+     *
+     * @return string
+     *
+     * @throws \InvalidArgumentException
+     */
+    private function queryAddFieldList($type, $value)
+    {
+        $fieldList = [];
+
+        $values = $type === 'single' ? $this->valuesSingle : $this->valuesCollection;
+        foreach ($value as $parameter) {
+            if (!in_array($parameter, $values)) {
+                throw new \InvalidArgumentException(sprintf(
+                    'Field %s is not available in the field list for repository %s, try one of %s',
+                    $parameter,
+                    $this->name,
+                    implode(', ', $values)
+                ));
+            }
+            $fieldList[] = $parameter;
+        }
+
+        return implode(',', $fieldList);
+    }
+
+    /**
+     * Checks that the given Query type is compatible with the Repository.
+     *
+     * @param string $type
+     *
+     * @throws \InvalidArgumentException
+     */
+    private function checkQueryRepositoryCompatibility($type)
+    {
+        if ($type === 'single' && !$this->urlSingle) {
+            throw new \InvalidArgumentException(sprintf(
+                'Trying to perform a single-type query on repository %s, which supports only collection type',
+                $this->name
+            ));
+        }
+        if ($type === 'collection' && !$this->urlCollection) {
+            throw new \InvalidArgumentException(sprintf(
+                'Trying to perform a collection-type query on repository %s, which supports only single type',
+                $this->name
+            ));
+        }
+    }
+
+    /**
+     * Finds possible problems with the presence of a resource ID, or lack thereof.
+     *
+     * @param array  $parameters
+     * @param string $type
+     *
+     * @throws \InvalidArgumentException
+     */
+    private function checkQueryResourceId($parameters, $type)
+    {
+        if (!$this->resourceId && $parameters['resource_id']) {
+            throw new \InvalidArgumentException(sprintf(
+                'Trying to query with a resource ID, but the repository %s does not provide support for them',
+                $this->name
+            ));
+        }
+        if ($type === 'single' && !$parameters['resource_id']) {
+            throw new \InvalidArgumentException(sprintf(
+                'Trying to query a single element without providing a resource ID for repository %s',
+                $this->name
+            ));
+        }
+        if ($type === 'collection' && $parameters['resource_id']) {
+            throw new \InvalidArgumentException(sprintf(
+                'Trying to query a collection element by providing a resource ID for repository %s',
+                $this->name
+            ));
+        }
     }
 }

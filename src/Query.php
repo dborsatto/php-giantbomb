@@ -8,6 +8,7 @@
  *
  * @copyright (c) 2017, Davide Borsatto
  */
+
 namespace DBorsatto\GiantBomb;
 
 /**
@@ -20,7 +21,7 @@ class Query
     /**
      * @var Repository
      */
-    private $repository = null;
+    private $repository;
 
     /**
      * A list of active filter.
@@ -34,7 +35,7 @@ class Query
      *
      * @var string
      */
-    private $sortBy = null;
+    private $sortBy;
 
     /**
      * A list of fields that will be loaded.
@@ -48,7 +49,7 @@ class Query
      *
      * @var string
      */
-    private $resourceId = null;
+    private $resourceId;
 
     /**
      * A list of active parameters.
@@ -162,6 +163,8 @@ class Query
      * @param Repository $repository
      *
      * @return array
+     *
+     * @throws \RuntimeException
      */
     public function find(Repository $repository = null)
     {
@@ -178,6 +181,8 @@ class Query
      * @param Repository $repository
      *
      * @return Model
+     *
+     * @throws \RuntimeException
      */
     public function findOne(Repository $repository = null)
     {

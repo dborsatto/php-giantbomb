@@ -74,7 +74,7 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testInvalidFilter()
     {
@@ -84,7 +84,7 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testInvalidSort()
     {
@@ -94,7 +94,7 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testInvalidField()
     {
@@ -104,7 +104,7 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testInvalidParameterName()
     {
@@ -114,7 +114,7 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testInvalidResourceIdPresenceNotAllowedByQuery()
     {
@@ -124,7 +124,7 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testInvalidResourceIdPresenceNotAllowedByRepository()
     {
@@ -143,7 +143,7 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testInvalidResourceIdAbsence()
     {
@@ -152,7 +152,7 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testInvalidParameterValue()
     {
@@ -162,7 +162,7 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testInvalidQueryToRepositoryWithoutUrlSingle()
     {
@@ -170,7 +170,7 @@ class RepositoryTest extends TestCase
             'api_endpoint' => '',
             'repositories' => ['Game' => [
                 'url_single' => null,
-                'url_collection' => 'url'
+                'url_collection' => 'url',
             ]],
         ];
         $config = new Config('MyApiKey', $repoApiConfig);
@@ -178,7 +178,7 @@ class RepositoryTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testInvalidQueryToRepositoryWithoutUrlCollection()
     {
@@ -186,7 +186,7 @@ class RepositoryTest extends TestCase
             'api_endpoint' => '',
             'repositories' => ['Game' => [
                 'url_single' => 'url',
-                'url_collection' => null
+                'url_collection' => null,
             ]],
         ];
         $config = new Config('MyApiKey', $repoApiConfig);

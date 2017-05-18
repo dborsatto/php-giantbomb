@@ -8,21 +8,21 @@ use PHPUnit\Framework\TestCase;
 class ConfigTest extends TestCase
 {
     /**
-     * Stub API key
+     * Stub API key.
      *
      * @var string
      */
     private $apiKey = 'MyApiKey';
 
     /**
-     * Stub API endpoint
+     * Stub API endpoint.
      *
      * @var string
      */
     private $apiEndpoint = 'https://www.google.com';
 
     /**
-     * Stub API repositories
+     * Stub API repositories.
      *
      * @var array
      */
@@ -44,7 +44,7 @@ class ConfigTest extends TestCase
     {
         $this->config = new Config($this->apiKey, [
             'api_endpoint' => $this->apiEndpoint,
-            'repositories' => $this->repositories
+            'repositories' => $this->repositories,
         ]);
     }
 

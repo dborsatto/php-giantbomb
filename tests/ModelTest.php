@@ -13,7 +13,7 @@ class ModelTest extends TestCase
     private $model = null;
 
     /**
-     * Stubs values
+     * Stubs values.
      *
      * @var array
      */
@@ -46,7 +46,7 @@ class ModelTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testExceptionWithInvalidValue()
     {
@@ -62,7 +62,7 @@ class ModelTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testMagicFunctionWithInvalidValues()
     {
@@ -78,7 +78,7 @@ class ModelTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testMagicGettersThrowExceptionWithInvalidParameter()
     {

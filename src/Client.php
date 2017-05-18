@@ -8,6 +8,7 @@
  *
  * @copyright (c) 2017, Davide Borsatto
  */
+
 namespace DBorsatto\GiantBomb;
 
 use GuzzleHttp\Client as GuzzleClient;
@@ -25,7 +26,7 @@ class Client
     /**
      * @var Config
      */
-    private $config = null;
+    private $config;
 
     /**
      * @var array
@@ -33,21 +34,21 @@ class Client
     private $repositories = [];
 
     /**
-     * @var Cache
+     * @var CacheProvider
      */
-    private $cache = null;
+    private $cache;
 
     /**
      * @var GuzzleClient
      */
-    private $guzzle = null;
+    private $guzzle;
 
     /**
      * Class constructor.
      *
-     * @param Config $config
+     * @param Config        $config
      * @param CacheProvider $cache
-     * @param GuzzleClient $guzzle
+     * @param GuzzleClient  $guzzle
      */
     public function __construct(Config $config, CacheProvider $cache = null, GuzzleClient $guzzle = null)
     {
@@ -61,7 +62,7 @@ class Client
     }
 
     /**
-     * Sets the current cache provider
+     * Sets the current cache provider.
      *
      * @param CacheProvider $cache
      *
@@ -78,7 +79,7 @@ class Client
     }
 
     /**
-     * Returns the current cache provider
+     * Returns the current cache provider.
      *
      * @return CacheProvider
      */
@@ -105,6 +106,8 @@ class Client
      * @param string $name
      *
      * @return Repository
+     *
+     * @throws \InvalidArgumentException
      */
     public function getRepository($name)
     {
@@ -166,7 +169,7 @@ class Client
      * Loads a HTTP resource.
      *
      * @param string $url
-     * @param array $parameters
+     * @param array  $parameters
      *
      * @return array
      */
@@ -190,15 +193,17 @@ class Client
     }
 
     /**
-     * Checks if the Response object is valid, and throws an exception if not
+     * Checks if the Response object is valid, and throws an exception if not.
      *
-     * @param  Response $response
+     * @param Response $response
      *
      * @return array The response body
+     *
+     * @throws \RuntimeException
      */
     private function processResponse(Response $response)
     {
-        if ($response->getStatusCode() != 200) {
+        if ($response->getStatusCode() !== 200) {
             throw new \RuntimeException('Query to the API server did not result in an appropriate response code');
         }
 
@@ -207,7 +212,7 @@ class Client
             throw new \RuntimeException('There was an error parsing the response JSON: '.json_last_error_msg());
         }
 
-        if ($body['error'] != 'OK') {
+        if ($body['error'] !== 'OK') {
             throw new \RuntimeException('Query to the API server did not result in an appropriate response code');
         }
 
@@ -215,10 +220,10 @@ class Client
     }
 
     /**
-     * Builds an url using the local Config and the given parameters
+     * Builds an url using the local Config and the given parameters.
      *
-     * @param  string $url
-     * @param  array $parameters
+     * @param string $url
+     * @param array  $parameters
      *
      * @return string
      */
@@ -233,10 +238,10 @@ class Client
     }
 
     /**
-     * Creates a signature for the given request
+     * Creates a signature for the given request.
      *
-     * @param  string $url
-     * @param  array $parameters
+     * @param string $url
+     * @param array  $parameters
      *
      * @return string
      */

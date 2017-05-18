@@ -59,7 +59,7 @@ class ClientTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testInvalidRepository()
     {
@@ -145,7 +145,7 @@ class ClientTest extends TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      */
     public function testProcessedResponseFailureCode()
     {
@@ -164,7 +164,7 @@ class ClientTest extends TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      */
     public function testProcessedResponseInvalidFormat()
     {
@@ -183,7 +183,7 @@ class ClientTest extends TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      */
     public function testProcessedResponseErrorPresent()
     {

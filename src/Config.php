@@ -8,9 +8,8 @@
  *
  * @copyright (c) 2017, Davide Borsatto
  */
-namespace DBorsatto\GiantBomb;
 
-use Symfony\Component\Yaml\Yaml;
+namespace DBorsatto\GiantBomb;
 
 /**
  * Class Config.

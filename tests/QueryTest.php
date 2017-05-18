@@ -56,7 +56,7 @@ class QueryTest extends TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      */
     public function testFindExceptionWhenNoRepositoryIsTied()
     {
@@ -64,7 +64,7 @@ class QueryTest extends TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      */
     public function testFindOneExceptionWhenNoRepositoryIsTied()
     {

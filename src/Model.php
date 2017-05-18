@@ -8,6 +8,7 @@
  *
  * @copyright (c) 2017, Davide Borsatto
  */
+
 namespace DBorsatto\GiantBomb;
 
 /**
@@ -59,6 +60,8 @@ class Model
      * @param string $value
      *
      * @return mixed
+     *
+     * @throws \InvalidArgumentException
      */
     public function get($value)
     {
@@ -80,6 +83,8 @@ class Model
      * @param array  $arguments
      *
      * @return mixed
+     *
+     * @throws \InvalidArgumentException
      */
     public function __call($name, $arguments)
     {
@@ -89,7 +94,11 @@ class Model
             return $this->get($key);
         }
 
-        throw new \InvalidArgumentException(sprintf('Call to invalid function %s on model %s', $name, $this->name));
+        throw new \InvalidArgumentException(sprintf(
+            'Call to invalid function %s on model %s',
+            $name,
+            $this->name
+        ));
     }
 
     /**
@@ -102,6 +111,18 @@ class Model
     public function __get($value)
     {
         return $this->get($value);
+    }
+
+    /**
+     * Magic function to check if the requestes value exists.
+     *
+     * @param string $value
+     *
+     * @return bool
+     */
+    public function __isset($value)
+    {
+        return isset($this->values[$value]);
     }
 
     /**
