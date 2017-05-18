@@ -155,14 +155,16 @@ class Query
 
         return $this;
     }
-
-    /**
-     * Loads an array of resource Model given the current data.
-     *
-     * @param Repository $repository
-     *
-     * @return array
-     */
+	
+	/**
+	 * Loads an array of resource Model given the current data.
+	 *
+	 * @param Repository $repository
+	 *
+	 * @return array
+	 * @throws \InvalidArgumentException
+	 * @throws \RuntimeException
+	 */
     public function find(Repository $repository = null)
     {
         if (!$repository && !($repository = $this->repository)) {
@@ -171,14 +173,16 @@ class Query
 
         return $repository->find($this->compileParameters());
     }
-
-    /**
-     * Loads a single resource Model given the current data.
-     *
-     * @param Repository $repository
-     *
-     * @return Model
-     */
+	
+	/**
+	 * Loads a single resource Model given the current data.
+	 *
+	 * @param Repository $repository
+	 *
+	 * @return \DBorsatto\GiantBomb\Model
+	 * @throws \InvalidArgumentException
+	 * @throws \RuntimeException
+	 */
     public function findOne(Repository $repository = null)
     {
         if (!$repository && !($repository = $this->repository)) {

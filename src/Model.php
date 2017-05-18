@@ -52,14 +52,15 @@ class Model
     {
         return $this->values;
     }
-
-    /**
-     * Returns a single value.
-     *
-     * @param string $value
-     *
-     * @return mixed
-     */
+	
+	/**
+	 * Returns a single value.
+	 *
+	 * @param string $value
+	 *
+	 * @return mixed
+	 * @throws \InvalidArgumentException
+	 */
     public function get($value)
     {
         if (!$this->has($value)) {
@@ -72,15 +73,22 @@ class Model
 
         return $this->values[$value];
     }
-
-    /**
-     * Magic function to allow methods like $model->getName().
-     *
-     * @param string $name
-     * @param array  $arguments
-     *
-     * @return mixed
-     */
+	
+	public function __set($name, $value)
+	{
+		echo "Setting '$name' to '$value'" . PHP_EOL;
+		$this->values[$name] = $value;
+	}
+	
+	/**
+	 * Magic function to allow methods like $model->getName().
+	 *
+	 * @param string $name
+	 * @param array  $arguments
+	 *
+	 * @return mixed
+	 * @throws \InvalidArgumentException
+	 */
     public function __call($name, $arguments)
     {
         if (0 === strpos($name, 'get')) {
@@ -91,18 +99,31 @@ class Model
 
         throw new \InvalidArgumentException(sprintf('Call to invalid function %s on model %s', $name, $this->name));
     }
-
-    /**
-     * Magic function to access a model value.
-     *
-     * @param string $value
-     *
-     * @return mixed
-     */
+	
+	/**
+	 * Magic function to access a model value.
+	 *
+	 * @param string $value
+	 *
+	 * @return mixed
+	 * @throws \InvalidArgumentException
+	 */
     public function __get($value)
     {
         return $this->get($value);
     }
+	
+	/**
+	 * Magic function to check if model value is set.
+	 *
+	 * @param string $value
+	 *
+	 * @return bool
+	 */
+	public function __isset($value)
+	{
+		return isset($this->values[$value]);
+	}
 
     /**
      * Checks if the requested value is valid.

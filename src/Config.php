@@ -10,8 +10,6 @@
  */
 namespace DBorsatto\GiantBomb;
 
-use Symfony\Component\Yaml\Yaml;
-
 /**
  * Class Config.
  *

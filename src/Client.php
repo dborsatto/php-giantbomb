@@ -25,7 +25,7 @@ class Client
     /**
      * @var Config
      */
-    private $config = null;
+    private $config;
 
     /**
      * @var array
@@ -33,14 +33,14 @@ class Client
     private $repositories = [];
 
     /**
-     * @var Cache
+     * @var CacheProvider
      */
-    private $cache = null;
+    private $cache;
 
     /**
      * @var GuzzleClient
      */
-    private $guzzle = null;
+    private $guzzle;
 
     /**
      * Class constructor.
@@ -49,11 +49,13 @@ class Client
      * @param CacheProvider $cache
      * @param GuzzleClient $guzzle
      */
-    public function __construct(Config $config, CacheProvider $cache = null, GuzzleClient $guzzle = null)
+    public function __construct(Config $config = null, CacheProvider $cache = null, GuzzleClient $guzzle = null)
     {
         $this->config = $config;
         $this->setCacheProvider($cache);
-        $this->initializeRepositories($config->getRepositories());
+		if ($config !== null) {
+			$this->initializeRepositories($config->getRepositories());
+		}
         if (!$guzzle) {
             $guzzle = new GuzzleClient();
         }
@@ -98,14 +100,15 @@ class Client
             $this->repositories[$name] = new Repository($this, $name, $data);
         }
     }
-
-    /**
-     * Returns a Repository.
-     *
-     * @param string $name
-     *
-     * @return Repository
-     */
+	
+	/**
+	 * Returns a Repository.
+	 *
+	 * @param string $name
+	 *
+	 * @return \DBorsatto\GiantBomb\Repository
+	 * @throws \InvalidArgumentException
+	 */
     public function getRepository($name)
     {
         if (!isset($this->repositories[$name])) {
@@ -118,40 +121,45 @@ class Client
 
         return $this->repositories[$name];
     }
-
-    /**
-     * Shortcut for creating a query for the given repository.
-     *
-     * @param string $name
-     *
-     * @return Query
-     */
+	
+	/**
+	 * Shortcut for creating a query for the given repository.
+	 *
+	 * @param string $name
+	 *
+	 * @return \DBorsatto\GiantBomb\Query
+	 * @throws \InvalidArgumentException
+	 */
     public function query($name)
     {
         return $this->getRepository($name)->query();
     }
-
-    /**
-     * Shortcut for finding a single element.
-     *
-     * @param string $name
-     * @param string $resourceId
-     *
-     * @return Model
-     */
+	
+	/**
+	 * Shortcut for finding a single element.
+	 *
+	 * @param string $name
+	 * @param string $resourceId
+	 *
+	 * @return \DBorsatto\GiantBomb\Model
+	 * @throws \InvalidArgumentException
+	 * @throws \RuntimeException
+	 */
     public function findOne($name, $resourceId)
     {
         return $this->getRepository($name)->query()->setResourceId($resourceId)->findOne();
     }
-
-    /**
-     * Shortcut for searching.
-     *
-     * @param string $string
-     * @param string $resources
-     *
-     * @return array
-     */
+	
+	/**
+	 * Shortcut for searching.
+	 *
+	 * @param string $string
+	 * @param string $resources
+	 *
+	 * @return array
+	 * @throws \InvalidArgumentException
+	 * @throws \RuntimeException
+	 */
     public function search($string, $resources = '')
     {
         $query = $this->getRepository('Search')->query()->setParameter('query', $string);
@@ -161,15 +169,16 @@ class Client
 
         return $query->find();
     }
-
-    /**
-     * Loads a HTTP resource.
-     *
-     * @param string $url
-     * @param array $parameters
-     *
-     * @return array
-     */
+	
+	/**
+	 * Loads a HTTP resource.
+	 *
+	 * @param string $url
+	 * @param array  $parameters
+	 *
+	 * @return array
+	 * @throws \RuntimeException
+	 */
     public function loadResource($url, $parameters)
     {
         $signature = $this->createSignature($url, $parameters);
@@ -188,17 +197,18 @@ class Client
 
         return $body['results'];
     }
-
-    /**
-     * Checks if the Response object is valid, and throws an exception if not
-     *
-     * @param  Response $response
-     *
-     * @return array The response body
-     */
+	
+	/**
+	 * Checks if the Response object is valid, and throws an exception if not
+	 *
+	 * @param  Response $response
+	 *
+	 * @return array The response body
+	 * @throws \RuntimeException
+	 */
     private function processResponse(Response $response)
     {
-        if ($response->getStatusCode() != 200) {
+        if ($response->getStatusCode() !== 200) {
             throw new \RuntimeException('Query to the API server did not result in an appropriate response code');
         }
 
@@ -207,7 +217,7 @@ class Client
             throw new \RuntimeException('There was an error parsing the response JSON: '.json_last_error_msg());
         }
 
-        if ($body['error'] != 'OK') {
+        if ($body['error'] !== 'OK') {
             throw new \RuntimeException('Query to the API server did not result in an appropriate response code');
         }
 
