@@ -208,7 +208,7 @@ class Client
 	 */
     private function processResponse(Response $response)
     {
-        if ($response->getStatusCode() != 200) {
+        if ($response->getStatusCode() !== 200) {
             throw new \RuntimeException('Query to the API server did not result in an appropriate response code');
         }
 
@@ -217,7 +217,7 @@ class Client
             throw new \RuntimeException('There was an error parsing the response JSON: '.json_last_error_msg());
         }
 
-        if ($body['error'] != 'OK') {
+        if ($body['error'] !== 'OK') {
             throw new \RuntimeException('Query to the API server did not result in an appropriate response code');
         }
 
