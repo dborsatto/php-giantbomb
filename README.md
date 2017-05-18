@@ -5,6 +5,8 @@
 [![Travis](https://img.shields.io/travis/dborsatto/php-giantbomb.svg)](https://travis-ci.org/dborsatto/php-giantbomb)
 [![Packagist](https://img.shields.io/packagist/l/dborsatto/php-giantbomb.svg)](https://packagist.org/packages/dborsatto/php-giantbomb)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/e630e521-fd39-4ac2-b994-5149d6ffaca4/mini.png)](https://insight.sensiolabs.com/projects/e630e521-fd39-4ac2-b994-5149d6ffaca4)
+[![Code Climate](https://codeclimate.com/github/dborsatto/php-giantbomb/badges/gpa.svg)](https://codeclimate.com/github/dborsatto/php-giantbomb)
+[![Test Coverage](https://codeclimate.com/github/dborsatto/php-giantbomb/badges/coverage.svg)](https://codeclimate.com/github/dborsatto/php-giantbomb/coverage)
 
 This is a library that acts as a wrapper for GiantBomb's API.
 
