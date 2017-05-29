@@ -11,10 +11,10 @@
 
 namespace DBorsatto\GiantBomb;
 
-use GuzzleHttp\Client as GuzzleClient;
-use GuzzleHttp\Psr7\Response;
 use Doctrine\Common\Cache\CacheProvider;
 use Doctrine\Common\Cache\VoidCache;
+use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Psr7\Response;
 
 /**
  * Class Client.
@@ -105,9 +105,9 @@ class Client
      *
      * @param string $name
      *
-     * @return Repository
-     *
      * @throws \InvalidArgumentException
+     *
+     * @return Repository
      */
     public function getRepository($name)
     {
@@ -197,9 +197,9 @@ class Client
      *
      * @param Response $response
      *
-     * @return array The response body
-     *
      * @throws \RuntimeException
+     *
+     * @return array The response body
      */
     private function processResponse(Response $response)
     {
