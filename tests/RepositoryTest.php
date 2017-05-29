@@ -131,9 +131,9 @@ class RepositoryTest extends TestCase
         $repoApiConfig = [
             'api_endpoint' => '',
             'repositories' => ['Game' => [
-                'url_single' => 'url',
+                'url_single'     => 'url',
                 'url_collection' => 'url',
-                'resource_id' => false,
+                'resource_id'    => false,
             ]],
         ];
         $config = new Config('MyApiKey', $repoApiConfig);
@@ -169,7 +169,7 @@ class RepositoryTest extends TestCase
         $repoApiConfig = [
             'api_endpoint' => '',
             'repositories' => ['Game' => [
-                'url_single' => null,
+                'url_single'     => null,
                 'url_collection' => 'url',
             ]],
         ];
@@ -185,7 +185,7 @@ class RepositoryTest extends TestCase
         $repoApiConfig = [
             'api_endpoint' => '',
             'repositories' => ['Game' => [
-                'url_single' => 'url',
+                'url_single'     => 'url',
                 'url_collection' => null,
             ]],
         ];

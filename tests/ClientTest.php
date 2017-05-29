@@ -2,13 +2,13 @@
 
 namespace DBorsatto\GiantBomb\Test;
 
-use DBorsatto\GiantBomb\Config;
 use DBorsatto\GiantBomb\Client;
+use DBorsatto\GiantBomb\Config;
+use Doctrine\Common\Cache\ArrayCache;
 use GuzzleHttp\Client as GuzzleClient;
-use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
-use Doctrine\Common\Cache\ArrayCache;
+use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 
 class ClientTest extends TestCase

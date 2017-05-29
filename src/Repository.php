@@ -92,12 +92,12 @@ class Repository
      * @var array
      */
     private static $defaultConfig = [
-        'values_single' => [],
+        'values_single'     => [],
         'values_collection' => [],
-        'query_parameters' => [],
+        'query_parameters'  => [],
         'fields_filterable' => [],
-        'fields_sortable' => [],
-        'resource_id' => true,
+        'fields_sortable'   => [],
+        'resource_id'       => true,
     ];
 
     /**
@@ -206,9 +206,9 @@ class Repository
      * @param array  $parameters
      * @param string $type
      *
-     * @return array
-     *
      * @throws \InvalidArgumentException
+     *
+     * @return array
      */
     private function formatParameters($parameters, $type)
     {
@@ -262,7 +262,7 @@ class Repository
         }
 
         return [
-            'parameters' => $returnParameters,
+            'parameters'  => $returnParameters,
             'resource_id' => $parameters['resource_id'],
         ];
     }
@@ -272,9 +272,9 @@ class Repository
      *
      * @param array $values
      *
-     * @return string
-     *
      * @throws \InvalidArgumentException
+     *
+     * @return string
      */
     private function queryAddFilterByParameter($values)
     {
@@ -319,9 +319,9 @@ class Repository
      * @param string $type
      * @param array  $value
      *
-     * @return string
-     *
      * @throws \InvalidArgumentException
+     *
+     * @return string
      */
     private function queryAddFieldList($type, $value)
     {

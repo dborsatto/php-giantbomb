@@ -59,9 +59,9 @@ class Model
      *
      * @param string $value
      *
-     * @return mixed
-     *
      * @throws \InvalidArgumentException
+     *
+     * @return mixed
      */
     public function get($value)
     {
@@ -82,9 +82,9 @@ class Model
      * @param string $name
      * @param array  $arguments
      *
-     * @return mixed
-     *
      * @throws \InvalidArgumentException
+     *
+     * @return mixed
      */
     public function __call($name, $arguments)
     {

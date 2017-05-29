@@ -162,9 +162,9 @@ class Query
      *
      * @param Repository $repository
      *
-     * @return array
-     *
      * @throws \RuntimeException
+     *
+     * @return array
      */
     public function find(Repository $repository = null)
     {
@@ -180,9 +180,9 @@ class Query
      *
      * @param Repository $repository
      *
-     * @return Model
-     *
      * @throws \RuntimeException
+     *
+     * @return Model
      */
     public function findOne(Repository $repository = null)
     {
@@ -201,7 +201,7 @@ class Query
     public function compileParameters()
     {
         $return = [
-            'query' => [],
+            'query'       => [],
             'resource_id' => $this->resourceId,
         ];
 
