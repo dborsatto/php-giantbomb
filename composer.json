@@ -2,6 +2,7 @@
     "name": "dborsatto/php-giantbomb",
     "description": "A PHP library that acts as a wrapper for the GiantBomb API.",
     "require": {
+        "php": "^7.1",
         "guzzlehttp/guzzle": "^6.2",
         "doctrine/cache": "^1.6"
     },

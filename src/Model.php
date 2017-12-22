@@ -38,7 +38,7 @@ class Model
      * @param string $name
      * @param array  $values
      */
-    public function __construct($name, $values)
+    public function __construct(string $name, array $values)
     {
         $this->name = $name;
         $this->values = $values;
@@ -49,7 +49,7 @@ class Model
      *
      * @return array
      */
-    public function getValues()
+    public function getValues(): array
     {
         return $this->values;
     }
@@ -63,13 +63,13 @@ class Model
      *
      * @return mixed
      */
-    public function get($value)
+    public function get(string $value)
     {
         if (!$this->has($value)) {
-            throw new \InvalidArgumentException(sprintf(
+            throw new \InvalidArgumentException(\sprintf(
                 'Value %s is not a valid key, expecting one of %s',
                 $value,
-                implode(', ', array_keys($this->values))
+                \implode(', ', \array_keys($this->values))
             ));
         }
 
@@ -86,15 +86,15 @@ class Model
      *
      * @return mixed
      */
-    public function __call($name, $arguments)
+    public function __call(string $name, array $arguments)
     {
-        if (0 === strpos($name, 'get')) {
-            $key = $this->convertValueString(substr($name, 3));
+        if (0 === \mb_strpos($name, 'get')) {
+            $key = $this->convertValueString(\mb_substr($name, 3));
 
             return $this->get($key);
         }
 
-        throw new \InvalidArgumentException(sprintf(
+        throw new \InvalidArgumentException(\sprintf(
             'Call to invalid function %s on model %s',
             $name,
             $this->name
@@ -108,7 +108,7 @@ class Model
      *
      * @return mixed
      */
-    public function __get($value)
+    public function __get(string $value)
     {
         return $this->get($value);
     }
@@ -120,7 +120,7 @@ class Model
      *
      * @return bool
      */
-    public function __isset($value)
+    public function __isset(string $value): bool
     {
         return isset($this->values[$value]);
     }
@@ -132,9 +132,9 @@ class Model
      *
      * @return bool
      */
-    public function has($value)
+    public function has(string $value): bool
     {
-        return array_key_exists($value, $this->values);
+        return \array_key_exists($value, $this->values);
     }
 
     /**
@@ -144,8 +144,8 @@ class Model
      *
      * @return string
      */
-    protected function convertValueString($value)
+    protected function convertValueString(string $value): string
     {
-        return strtolower(preg_replace('/(?<=\\w)(?=[A-Z])/', '_$1', $value));
+        return \mb_strtolower(\preg_replace('/(?<=\\w)(?=[A-Z])/', '_$1', $value));
     }
 }

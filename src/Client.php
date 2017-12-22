@@ -15,6 +15,7 @@ use Doctrine\Common\Cache\CacheProvider;
 use Doctrine\Common\Cache\VoidCache;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Psr7\Response;
+use function GuzzleHttp\json_decode as guzzle_json_decode;
 
 /**
  * Class Client.
@@ -46,9 +47,9 @@ class Client
     /**
      * Class constructor.
      *
-     * @param Config        $config
-     * @param CacheProvider $cache
-     * @param GuzzleClient  $guzzle
+     * @param Config             $config
+     * @param CacheProvider|null $cache
+     * @param GuzzleClient|null  $guzzle
      */
     public function __construct(Config $config, CacheProvider $cache = null, GuzzleClient $guzzle = null)
     {
@@ -64,11 +65,11 @@ class Client
     /**
      * Sets the current cache provider.
      *
-     * @param CacheProvider $cache
+     * @param CacheProvider|null $cache
      *
      * @return Client
      */
-    public function setCacheProvider(CacheProvider $cache = null)
+    public function setCacheProvider(?CacheProvider $cache): self
     {
         if (!$cache) {
             $cache = new VoidCache();
@@ -83,7 +84,7 @@ class Client
      *
      * @return CacheProvider
      */
-    public function getCacheProvider()
+    public function getCacheProvider(): CacheProvider
     {
         return $this->cache;
     }
@@ -93,7 +94,7 @@ class Client
      *
      * @param array $repositories
      */
-    private function initializeRepositories(array $repositories)
+    private function initializeRepositories(array $repositories): void
     {
         foreach ($repositories as $name => $data) {
             $this->repositories[$name] = new Repository($this, $name, $data);
@@ -109,13 +110,13 @@ class Client
      *
      * @return Repository
      */
-    public function getRepository($name)
+    public function getRepository(string $name): Repository
     {
         if (!isset($this->repositories[$name])) {
-            throw new \InvalidArgumentException(sprintf(
+            throw new \InvalidArgumentException(\sprintf(
                 'The name %s is not a valid repository, try one of %s',
                 $name,
-                implode(', ', array_keys($this->repositories))
+                \implode(', ', \array_keys($this->repositories))
             ));
         }
 
@@ -129,7 +130,7 @@ class Client
      *
      * @return Query
      */
-    public function query($name)
+    public function query(string $name): Query
     {
         return $this->getRepository($name)->query();
     }
@@ -142,7 +143,7 @@ class Client
      *
      * @return Model
      */
-    public function findOne($name, $resourceId)
+    public function findOne(string $name, string $resourceId): Model
     {
         return $this->getRepository($name)->query()->setResourceId($resourceId)->findOne();
     }
@@ -155,11 +156,11 @@ class Client
      *
      * @return array
      */
-    public function search($string, $resources = '')
+    public function search(string $string, string $resources = ''): array
     {
         $query = $this->getRepository('Search')->query()->setParameter('query', $string);
         if ($resources) {
-            $query->setParameter('resources', strtolower($resources));
+            $query->setParameter('resources', \mb_strtolower($resources));
         }
 
         return $query->find();
@@ -173,7 +174,7 @@ class Client
      *
      * @return array
      */
-    public function loadResource($url, $parameters)
+    public function loadResource(string $url, array $parameters): array
     {
         $signature = $this->createSignature($url, $parameters);
         if ($this->cache->contains($signature)) {
@@ -201,18 +202,15 @@ class Client
      *
      * @return array The response body
      */
-    private function processResponse(Response $response)
+    private function processResponse(Response $response): array
     {
-        if ($response->getStatusCode() !== 200) {
+        if (200 !== $response->getStatusCode()) {
             throw new \RuntimeException('Query to the API server did not result in an appropriate response code');
         }
 
-        $body = json_decode($response->getBody()->getContents(), true);
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new \RuntimeException('There was an error parsing the response JSON: '.json_last_error_msg());
-        }
+        $body = guzzle_json_decode((string) $response->getBody(), true);
 
-        if ($body['error'] !== 'OK') {
+        if ('OK' !== $body['error']) {
             throw new \RuntimeException('Query to the API server did not result in an appropriate response code');
         }
 
@@ -227,7 +225,7 @@ class Client
      *
      * @return string
      */
-    private function buildQueryUrl($url, $parameters)
+    private function buildQueryUrl(string $url, array $parameters): string
     {
         $query = '';
         foreach ($parameters as $name => $value) {
@@ -245,8 +243,8 @@ class Client
      *
      * @return string
      */
-    private function createSignature($url, $parameters)
+    private function createSignature(string $url, array $parameters): string
     {
-        return 'giantbomb-'.substr(sha1($this->buildQueryUrl($url, $parameters)), 0, 7);
+        return 'giantbomb-'.\mb_substr(\sha1($this->buildQueryUrl($url, $parameters)), 0, 7);
     }
 }

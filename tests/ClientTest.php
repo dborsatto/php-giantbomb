@@ -73,7 +73,7 @@ class ClientTest extends TestCase
 
     public function testQueryBuilder()
     {
-        $reflection = new \ReflectionClass(get_class($this->client));
+        $reflection = new \ReflectionClass(\get_class($this->client));
         $method = $reflection->getMethod('buildQueryUrl');
         $method->setAccessible(true);
 
@@ -84,12 +84,12 @@ class ClientTest extends TestCase
         ];
 
         $url = $method->invokeArgs($this->client, [$baseUrl, $parameters]);
-        $this->assertEquals($url, 'example/?param1=value1&param2=value2&');
+        $this->assertSame($url, 'example/?param1=value1&param2=value2&');
     }
 
     public function testSignatureCreator()
     {
-        $reflection = new \ReflectionClass(get_class($this->client));
+        $reflection = new \ReflectionClass(\get_class($this->client));
         $method = $reflection->getMethod('createSignature');
         $method->setAccessible(true);
 
@@ -100,7 +100,7 @@ class ClientTest extends TestCase
         ];
 
         $signature = $method->invokeArgs($this->client, [$baseUrl, $parameters]);
-        $this->assertEquals($signature, 'giantbomb-faed9fe');
+        $this->assertSame($signature, 'giantbomb-faed9fe');
     }
 
     public function testShortcuts()
@@ -119,29 +119,29 @@ class ClientTest extends TestCase
 
         $this->client->getRepository('Game')->setClient($stubClient);
         $model = $this->client->findOne('Game', 'resource_id');
-        $this->assertTrue(is_array($model->getValues()));
+        $this->assertInternalType('array', $model->getValues());
 
         $this->client->getRepository('Search')->setClient($stubClient);
         $models = $this->client->search('value', 'resource');
-        $this->assertEquals(count($models), 2);
-        $this->assertTrue(is_array($models[1]->get('parameters')));
+        $this->assertSame(\count($models), 2);
+        $this->assertInternalType('array', $models[1]->get('parameters'));
     }
 
     public function testProcessedResponseSuccess()
     {
         $jsonBody = ['error' => 'OK'];
         $guzzle = $this->createGuzzleMock([
-            new Response(200, [], json_encode($jsonBody)),
+            new Response(200, [], \json_encode($jsonBody)),
         ]);
 
         $response = $guzzle->request('GET', 'https://www.google.com');
 
-        $reflection = new \ReflectionClass(get_class($this->client));
+        $reflection = new \ReflectionClass(\get_class($this->client));
         $method = $reflection->getMethod('processResponse');
         $method->setAccessible(true);
 
         $value = $method->invokeArgs($this->client, [$response]);
-        $this->assertEquals($value, $jsonBody);
+        $this->assertSame($value, $jsonBody);
     }
 
     /**
@@ -155,7 +155,7 @@ class ClientTest extends TestCase
 
         $response = $guzzle->request('GET', 'https://www.google.com');
 
-        $reflection = new \ReflectionClass(get_class($this->client));
+        $reflection = new \ReflectionClass(\get_class($this->client));
         $method = $reflection->getMethod('processResponse');
         $method->setAccessible(true);
 
@@ -164,7 +164,7 @@ class ClientTest extends TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException \InvalidArgumentException
      */
     public function testProcessedResponseInvalidFormat()
     {
@@ -174,7 +174,7 @@ class ClientTest extends TestCase
 
         $response = $guzzle->request('GET', 'https://www.google.com');
 
-        $reflection = new \ReflectionClass(get_class($this->client));
+        $reflection = new \ReflectionClass(\get_class($this->client));
         $method = $reflection->getMethod('processResponse');
         $method->setAccessible(true);
 
@@ -188,12 +188,12 @@ class ClientTest extends TestCase
     public function testProcessedResponseErrorPresent()
     {
         $guzzle = $this->createGuzzleMock([
-            new Response(200, [], json_encode(['error' => 'KO'])),
+            new Response(200, [], \json_encode(['error' => 'KO'])),
         ]);
 
         $response = $guzzle->request('GET', 'https://www.google.com');
 
-        $reflection = new \ReflectionClass(get_class($this->client));
+        $reflection = new \ReflectionClass(\get_class($this->client));
         $method = $reflection->getMethod('processResponse');
         $method->setAccessible(true);
 
@@ -206,17 +206,17 @@ class ClientTest extends TestCase
         $firstResult = ['first_result'];
         $secondResult = ['second_result'];
         $guzzle = $this->createGuzzleMock([
-            new Response(200, [], json_encode(['error' => 'OK', 'results' => $firstResult])),
-            new Response(200, [], json_encode(['error' => 'OK', 'results' => $secondResult])),
+            new Response(200, [], \json_encode(['error' => 'OK', 'results' => $firstResult])),
+            new Response(200, [], \json_encode(['error' => 'OK', 'results' => $secondResult])),
         ]);
 
         $client = new Client(new Config('MyApiKey'), new ArrayCache(), $guzzle);
 
         $value = $client->loadResource('https://www.google.com', ['test' => true]);
-        $this->assertEquals($value, $firstResult);
+        $this->assertSame($value, $firstResult);
 
         // Test "cached" result
         $value = $client->loadResource('https://www.google.com', ['test' => true]);
-        $this->assertEquals($value, $firstResult);
+        $this->assertSame($value, $firstResult);
     }
 }

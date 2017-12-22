@@ -50,16 +50,16 @@ class ConfigTest extends TestCase
 
     public function testApiKey()
     {
-        $this->assertEquals($this->apiKey, $this->config->getApiKey());
+        $this->assertSame($this->apiKey, $this->config->getApiKey());
     }
 
     public function testApiEndpoint()
     {
-        $this->assertEquals($this->apiEndpoint, $this->config->getApiEndpoint());
+        $this->assertSame($this->apiEndpoint, $this->config->getApiEndpoint());
     }
 
     public function testRepositories()
     {
-        $this->assertEquals($this->repositories, $this->config->getRepositories());
+        $this->assertSame($this->repositories, $this->config->getRepositories());
     }
 }

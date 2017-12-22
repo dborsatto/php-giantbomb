@@ -11,6 +11,8 @@
 
 namespace DBorsatto\GiantBomb;
 
+use function GuzzleHttp\json_decode as guzzle_json_decode;
+
 /**
  * Class Config.
  *
@@ -23,19 +25,19 @@ class Config
      *
      * @var string
      */
-    private $apiKey = null;
+    private $apiKey;
 
     /**
      * The API endpoint.
      *
      * @var string
      */
-    private $apiEndpoint = null;
+    private $apiEndpoint;
 
     /**
      * The API resource repositories.
      *
-     * @var string
+     * @var array
      */
     private $repositories = [];
 
@@ -45,13 +47,13 @@ class Config
      * @param string $apiKey
      * @param array  $config
      */
-    public function __construct($apiKey, array $config = null)
+    public function __construct(string $apiKey, array $config = [])
     {
         $this->apiKey = $apiKey;
 
         // If no configuration is provided, loads the default
         if (!$config) {
-            $config = json_decode(file_get_contents(__DIR__.'/Resources/config/api.json'), true);
+            $config = guzzle_json_decode(\file_get_contents(__DIR__.'/Resources/config/api.json'), true);
         }
 
         $this->apiEndpoint = $config['api_endpoint'];
@@ -63,7 +65,7 @@ class Config
      *
      * @return string
      */
-    public function getApiKey()
+    public function getApiKey(): string
     {
         return $this->apiKey;
     }
@@ -73,7 +75,7 @@ class Config
      *
      * @return string
      */
-    public function getApiEndpoint()
+    public function getApiEndpoint(): string
     {
         return $this->apiEndpoint;
     }
@@ -83,7 +85,7 @@ class Config
      *
      * @return array
      */
-    public function getRepositories()
+    public function getRepositories(): array
     {
         return $this->repositories;
     }

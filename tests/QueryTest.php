@@ -36,23 +36,23 @@ class QueryTest extends TestCase
     {
         $parameters = $this->query->compileParameters();
 
-        $this->assertEquals($parameters['resource_id'], 'resource9');
+        $this->assertSame($parameters['resource_id'], 'resource9');
 
-        $this->assertEquals(count($parameters['query']), 4);
+        $this->assertSame(\count($parameters['query']), 4);
 
-        $this->assertEquals(count($parameters['query']['filter_by']), 3);
-        $this->assertEquals($parameters['query']['filter_by'], [
+        $this->assertSame(\count($parameters['query']['filter_by']), 3);
+        $this->assertSame($parameters['query']['filter_by'], [
             'filter1' => 'value1',
             'filter2' => 'value2',
             'filter3' => 'value3',
         ]);
 
-        $this->assertEquals($parameters['query']['sort_by'][0], 'sort4');
-        $this->assertEquals($parameters['query']['sort_by'][1], 'desc');
+        $this->assertSame($parameters['query']['sort_by'][0], 'sort4');
+        $this->assertSame($parameters['query']['sort_by'][1], 'desc');
 
-        $this->assertEquals($parameters['query']['field_list'], ['field5', 'field6', 'field7']);
+        $this->assertSame($parameters['query']['field_list'], ['field5', 'field6', 'field7']);
 
-        $this->assertEquals($parameters['query']['parameter8'], 'value8');
+        $this->assertSame($parameters['query']['parameter8'], 'value8');
     }
 
     /**

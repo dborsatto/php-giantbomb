@@ -34,15 +34,15 @@ class ModelTest extends TestCase
 
     public function testValues()
     {
-        $this->assertEquals($this->model->getValues(), $this->testValues);
+        $this->assertSame($this->model->getValues(), $this->testValues);
     }
 
     public function testValidValues()
     {
-        $this->assertEquals($this->model->get('key1'), 'value2');
-        $this->assertEquals($this->model->get('key3'), ['value4', 'value5']);
-        $this->assertEquals($this->model->get('key6'), 7);
-        $this->assertEquals($this->model->get('key8'), null);
+        $this->assertSame($this->model->get('key1'), 'value2');
+        $this->assertSame($this->model->get('key3'), ['value4', 'value5']);
+        $this->assertSame($this->model->get('key6'), 7);
+        $this->assertSame($this->model->get('key8'), null);
     }
 
     /**
@@ -55,10 +55,10 @@ class ModelTest extends TestCase
 
     public function testMagicFunctionWithValidValues()
     {
-        $this->assertEquals($this->model->key1, 'value2');
-        $this->assertEquals($this->model->key3, ['value4', 'value5']);
-        $this->assertEquals($this->model->key6, 7);
-        $this->assertEquals($this->model->key8, null);
+        $this->assertSame($this->model->key1, 'value2');
+        $this->assertSame($this->model->key3, ['value4', 'value5']);
+        $this->assertSame($this->model->key6, 7);
+        $this->assertSame($this->model->key8, null);
     }
 
     /**
@@ -71,10 +71,10 @@ class ModelTest extends TestCase
 
     public function testMagicGetters()
     {
-        $this->assertEquals($this->model->getKey1(), 'value2');
-        $this->assertEquals($this->model->getKey3(), ['value4', 'value5']);
-        $this->assertEquals($this->model->getKey6(), 7);
-        $this->assertEquals($this->model->getKey8(), null);
+        $this->assertSame($this->model->getKey1(), 'value2');
+        $this->assertSame($this->model->getKey3(), ['value4', 'value5']);
+        $this->assertSame($this->model->getKey6(), 7);
+        $this->assertSame($this->model->getKey8(), null);
     }
 
     /**

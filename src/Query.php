@@ -33,9 +33,9 @@ class Query
     /**
      * The active sorting field.
      *
-     * @var string
+     * @var string[]
      */
-    private $sortBy;
+    private $sortBy = [];
 
     /**
      * A list of fields that will be loaded.
@@ -61,7 +61,7 @@ class Query
     /**
      * Class constructor.
      *
-     * @param Repository $repository
+     * @param Repository|null $repository
      */
     public function __construct(Repository $repository = null)
     {
@@ -73,11 +73,11 @@ class Query
     /**
      * Sets the current Repository.
      *
-     * @param Repository $repository
+     * @param Repository|null $repository
      *
-     * @return Query
+     * @return self
      */
-    public function setRepository(Repository $repository = null)
+    public function setRepository(Repository $repository = null): self
     {
         $this->repository = $repository;
 
@@ -90,9 +90,9 @@ class Query
      * @param string $field
      * @param string $value
      *
-     * @return Query
+     * @return self
      */
-    public function addFilterBy($field, $value)
+    public function addFilterBy(string $field, string $value): self
     {
         $this->filterBy[$field] = $value;
 
@@ -105,9 +105,9 @@ class Query
      * @param string $field
      * @param string $direction
      *
-     * @return Query
+     * @return self
      */
-    public function sortBy($field, $direction = 'asc')
+    public function sortBy(string $field, string $direction = 'asc'): self
     {
         $this->sortBy = [$field, $direction];
 
@@ -119,9 +119,9 @@ class Query
      *
      * @param array $list
      *
-     * @return Query
+     * @return self
      */
-    public function setFieldList(array $list)
+    public function setFieldList(array $list): self
     {
         $this->fieldList = $list;
 
@@ -134,9 +134,9 @@ class Query
      * @param string $parameter
      * @param string $value
      *
-     * @return Query
+     * @return self
      */
-    public function setParameter($parameter, $value)
+    public function setParameter(string $parameter, string $value): self
     {
         $this->parameters[$parameter] = $value;
 
@@ -148,9 +148,9 @@ class Query
      *
      * @param string $resourceId
      *
-     * @return Query
+     * @return self
      */
-    public function setResourceId($resourceId)
+    public function setResourceId(string $resourceId): self
     {
         $this->resourceId = $resourceId;
 
@@ -160,13 +160,13 @@ class Query
     /**
      * Loads an array of resource Model given the current data.
      *
-     * @param Repository $repository
+     * @param Repository|null $repository
      *
      * @throws \RuntimeException
      *
-     * @return array
+     * @return Model[]
      */
-    public function find(Repository $repository = null)
+    public function find(Repository $repository = null): array
     {
         if (!$repository && !($repository = $this->repository)) {
             throw new \RuntimeException('The current Query object is not tied to any Repository');
@@ -178,13 +178,13 @@ class Query
     /**
      * Loads a single resource Model given the current data.
      *
-     * @param Repository $repository
+     * @param Repository|null $repository
      *
      * @throws \RuntimeException
      *
      * @return Model
      */
-    public function findOne(Repository $repository = null)
+    public function findOne(Repository $repository = null): Model
     {
         if (!$repository && !($repository = $this->repository)) {
             throw new \RuntimeException('The current Query object is not tied to any Repository');
@@ -198,10 +198,10 @@ class Query
      *
      * @return array
      */
-    public function compileParameters()
+    public function compileParameters(): array
     {
         $return = [
-            'query'       => [],
+            'query' => [],
             'resource_id' => $this->resourceId,
         ];
 
