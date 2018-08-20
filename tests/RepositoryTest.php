@@ -45,12 +45,12 @@ class RepositoryTest extends TestCase
     public function testReturnValues()
     {
         $models = $this->repository->query()->find();
-        $this->assertEquals(count($models), 2);
-        $this->assertTrue(is_array($models[1]->get('parameters')));
+        $this->assertSame(\count($models), 2);
+        $this->assertInternalType('array', $models[1]->get('parameters'));
 
         $models = $this->repository->find(new Query());
-        $this->assertEquals(count($models), 2);
-        $this->assertTrue(is_array($models[1]->get('parameters')));
+        $this->assertSame(\count($models), 2);
+        $this->assertInternalType('array', $models[1]->get('parameters'));
 
         $query = new Query();
         $query->addFilterBy('name', 'name1');
@@ -59,18 +59,18 @@ class RepositoryTest extends TestCase
         $query->setParameter('platforms', 'ps3');
 
         $models = $this->repository->find($query);
-        $this->assertEquals(count($models), 2);
-        $this->assertTrue(is_array($models[1]->get('parameters')));
+        $this->assertSame(\count($models), 2);
+        $this->assertInternalType('array', $models[1]->get('parameters'));
 
         $query = new Query();
         $query->setResourceId('id');
         $model = $this->repository->findOne($query);
-        $this->assertTrue(is_array($model->getValues()));
+        $this->assertInternalType('array', $model->getValues());
 
         $query = new Query();
         $query->setResourceId('id');
         $model = $query->findOne($this->repository);
-        $this->assertTrue(is_array($model->getValues()));
+        $this->assertInternalType('array', $model->getValues());
     }
 
     /**
@@ -131,9 +131,9 @@ class RepositoryTest extends TestCase
         $repoApiConfig = [
             'api_endpoint' => '',
             'repositories' => ['Game' => [
-                'url_single'     => 'url',
+                'url_single' => 'url',
                 'url_collection' => 'url',
-                'resource_id'    => false,
+                'resource_id' => false,
             ]],
         ];
         $config = new Config('MyApiKey', $repoApiConfig);
@@ -154,22 +154,12 @@ class RepositoryTest extends TestCase
     /**
      * @expectedException \InvalidArgumentException
      */
-    public function testInvalidParameterValue()
-    {
-        $query = new Query();
-        $query->setParameter('limit', []);
-        $this->repository->find($query);
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testInvalidQueryToRepositoryWithoutUrlSingle()
     {
         $repoApiConfig = [
             'api_endpoint' => '',
             'repositories' => ['Game' => [
-                'url_single'     => null,
+                'url_single' => null,
                 'url_collection' => 'url',
             ]],
         ];
@@ -185,7 +175,7 @@ class RepositoryTest extends TestCase
         $repoApiConfig = [
             'api_endpoint' => '',
             'repositories' => ['Game' => [
-                'url_single'     => 'url',
+                'url_single' => 'url',
                 'url_collection' => null,
             ]],
         ];
