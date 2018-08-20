@@ -1,15 +1,70 @@
 language: php
 
-php:
-  - 7.1
-  - 7.2
+env:
+  global:
+    - GH_REPO="github.com/${TRAVIS_REPO_SLUG}.git"
+    - BUILD_LEAD=0
+    - SYNTAX_TEST=0
+
+matrix:
+  fast_finish: true
+  include:
+    - php: 7.2
+      env: SYNTAX_TEST=1
+    - php: 7.1
+    - php: 7.2
+      env: BUILD_LEAD=1
+
+branches:
+  only:
+    - master
+
+before_install:
+  - |
+    # Disable XDebug
+    #
+    # XDebug makes PHPUnit and PHP-CS-Fixer slow.
+    # We need it only for generating the code coverage report,
+    # so we disable it everywhere but for the build lead.
+    if [ $BUILD_LEAD == 0 ]
+    then
+      phpenv config-rm xdebug.ini
+    fi
 
 install:
-  - composer self-update
-  - composer install
+  - |
+    # Install dependencies
+    # We don't need to install dependencies when doing the syntax check.
+    if [ $SYNTAX_TEST == 0 ]
+    then
+      composer install
+    fi
 
 script:
-  - php vendor/bin/phpunit
+  - |
+    # PHPUnit tests
+    if [ $SYNTAX_TEST == 0 ]
+    then
+      php vendor/bin/phpunit --stop-on-error --stop-on-failure -v
+    fi
 
-notifications:
-  email: false
+  - |
+    # Syntax tests
+    #
+    # We use PHP-CS-Fixer to check for syntax and style errors,
+    # but we run a separate build for that to take advantage of build parallelism.
+    if [ $SYNTAX_TEST == 1 ]
+    then
+      wget http://cs.sensiolabs.org/download/php-cs-fixer-v2.phar -q -O php-cs-fixer.phar
+      php php-cs-fixer.phar fix --dry-run --stop-on-violation -v
+    fi
+
+after_success:
+  - |
+    # Upload code coverage
+    #
+    # The code coverage report is only generated when BUILD_LEAD is 1.
+    if [ $BUILD_LEAD == 1 ]
+    then
+      travis_retry bash <(curl -s https://codecov.io/bash) -f build/logs/clover.xml
+    fi

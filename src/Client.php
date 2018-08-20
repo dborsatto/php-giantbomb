@@ -1,26 +1,21 @@
 <?php
 
 /**
- * This file is part of the GiantBomb PHP API created by Davide Borsatto.
+ * This file is part of the dborsatto/php-giantbomb package.
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- *
- * @copyright (c) 2017, Davide Borsatto
+ * @license   MIT
  */
 
 namespace DBorsatto\GiantBomb;
 
-use Doctrine\Common\Cache\CacheProvider;
-use Doctrine\Common\Cache\VoidCache;
+use Cache\Adapter\Void\VoidCachePool;
 use GuzzleHttp\Client as GuzzleClient;
-use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\ResponseInterface;
+use Psr\SimpleCache\CacheInterface;
 use function GuzzleHttp\json_decode as guzzle_json_decode;
 
 /**
- * Class Client.
- *
- * @author Davide Borsatto <davide.borsatto@gmail.com>
+ * Client class.
  */
 class Client
 {
@@ -35,7 +30,7 @@ class Client
     private $repositories = [];
 
     /**
-     * @var CacheProvider
+     * @var CacheInterface
      */
     private $cache;
 
@@ -47,32 +42,29 @@ class Client
     /**
      * Class constructor.
      *
-     * @param Config             $config
-     * @param CacheProvider|null $cache
-     * @param GuzzleClient|null  $guzzle
+     * @param Config         $config
+     * @param CacheInterface $cache
+     * @param GuzzleClient   $guzzle
      */
-    public function __construct(Config $config, CacheProvider $cache = null, GuzzleClient $guzzle = null)
+    public function __construct(Config $config, CacheInterface $cache = null, GuzzleClient $guzzle = null)
     {
         $this->config = $config;
-        $this->setCacheProvider($cache);
+        $this->guzzle = $guzzle ?: new GuzzleClient();
+        $this->setCache($cache);
         $this->initializeRepositories($config->getRepositories());
-        if (!$guzzle) {
-            $guzzle = new GuzzleClient();
-        }
-        $this->guzzle = $guzzle;
     }
 
     /**
-     * Sets the current cache provider.
+     * Sets the current cache.
      *
-     * @param CacheProvider|null $cache
+     * @param CacheInterface|null $cache
      *
      * @return Client
      */
-    public function setCacheProvider(?CacheProvider $cache): self
+    public function setCache(?CacheInterface $cache)
     {
         if (!$cache) {
-            $cache = new VoidCache();
+            $cache = new VoidCachePool();
         }
         $this->cache = $cache;
 
@@ -80,11 +72,11 @@ class Client
     }
 
     /**
-     * Returns the current cache provider.
+     * Returns the current cache.
      *
-     * @return CacheProvider
+     * @return CacheInterface
      */
-    public function getCacheProvider(): CacheProvider
+    public function getCache()
     {
         return $this->cache;
     }
@@ -132,7 +124,8 @@ class Client
      */
     public function query(string $name): Query
     {
-        return $this->getRepository($name)->query();
+        return $this->getRepository($name)
+            ->query();
     }
 
     /**
@@ -145,7 +138,10 @@ class Client
      */
     public function findOne(string $name, string $resourceId): Model
     {
-        return $this->getRepository($name)->query()->setResourceId($resourceId)->findOne();
+        return $this->getRepository($name)
+            ->query()
+            ->setResourceId($resourceId)
+            ->findOne();
     }
 
     /**
@@ -158,7 +154,9 @@ class Client
      */
     public function search(string $string, string $resources = ''): array
     {
-        $query = $this->getRepository('Search')->query()->setParameter('query', $string);
+        $query = $this->getRepository('Search')
+            ->query()
+            ->setParameter('query', $string);
         if ($resources) {
             $query->setParameter('resources', \mb_strtolower($resources));
         }
@@ -177,8 +175,8 @@ class Client
     public function loadResource(string $url, array $parameters): array
     {
         $signature = $this->createSignature($url, $parameters);
-        if ($this->cache->contains($signature)) {
-            return $this->cache->fetch($signature);
+        if ($this->cache->has($signature)) {
+            return $this->cache->get($signature);
         }
 
         $parameters['format'] = 'json';
@@ -188,7 +186,7 @@ class Client
         $response = $this->guzzle->request('GET', $url);
         $body = $this->processResponse($response);
 
-        $this->cache->save($signature, $body['results']);
+        $this->cache->set($signature, $body['results']);
 
         return $body['results'];
     }
@@ -196,13 +194,13 @@ class Client
     /**
      * Checks if the Response object is valid, and throws an exception if not.
      *
-     * @param Response $response
+     * @param ResponseInterface $response
      *
      * @throws \RuntimeException
      *
      * @return array The response body
      */
-    private function processResponse(Response $response): array
+    private function processResponse(ResponseInterface $response)
     {
         if (200 !== $response->getStatusCode()) {
             throw new \RuntimeException('Query to the API server did not result in an appropriate response code');
@@ -227,12 +225,7 @@ class Client
      */
     private function buildQueryUrl(string $url, array $parameters): string
     {
-        $query = '';
-        foreach ($parameters as $name => $value) {
-            $query .= $name.'='.$value.'&';
-        }
-
-        return $url.'?'.$query;
+        return $url.'?'.\http_build_query($parameters);
     }
 
     /**

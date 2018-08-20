@@ -1,15 +1,22 @@
 <?php
 
+/**
+ * This file is part of the dborsatto/php-giantbomb package.
+ *
+ * @license   MIT
+ */
+
 namespace DBorsatto\GiantBomb\Test;
 
+use Cache\Adapter\PHPArray\ArrayCachePool;
 use DBorsatto\GiantBomb\Client;
 use DBorsatto\GiantBomb\Config;
-use Doctrine\Common\Cache\ArrayCache;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
+use Psr\SimpleCache\CacheInterface;
 
 class ClientTest extends TestCase
 {
@@ -68,7 +75,7 @@ class ClientTest extends TestCase
 
     public function testValidCacheProvider()
     {
-        $this->assertInstanceOf('Doctrine\Common\Cache\CacheProvider', $this->client->getCacheProvider());
+        $this->assertInstanceOf(CacheInterface::class, $this->client->getCache());
     }
 
     public function testQueryBuilder()
@@ -84,7 +91,7 @@ class ClientTest extends TestCase
         ];
 
         $url = $method->invokeArgs($this->client, [$baseUrl, $parameters]);
-        $this->assertSame($url, 'example/?param1=value1&param2=value2&');
+        $this->assertSame($url, 'example/?param1=value1&param2=value2');
     }
 
     public function testSignatureCreator()
@@ -100,13 +107,13 @@ class ClientTest extends TestCase
         ];
 
         $signature = $method->invokeArgs($this->client, [$baseUrl, $parameters]);
-        $this->assertSame($signature, 'giantbomb-faed9fe');
+        $this->assertSame($signature, 'giantbomb-4ab6ba3');
     }
 
     public function testShortcuts()
     {
         $config = new Config('MyApiKey');
-        $stubClient = $this->getMockBuilder('\DBorsatto\GiantBomb\Client')
+        $stubClient = $this->getMockBuilder(Client::class)
             ->setConstructorArgs([$config, null])
             ->getMock();
         $stubClient->method('loadResource')
@@ -210,7 +217,7 @@ class ClientTest extends TestCase
             new Response(200, [], \json_encode(['error' => 'OK', 'results' => $secondResult])),
         ]);
 
-        $client = new Client(new Config('MyApiKey'), new ArrayCache(), $guzzle);
+        $client = new Client(new Config('MyApiKey'), new ArrayCachePool(), $guzzle);
 
         $value = $client->loadResource('https://www.google.com', ['test' => true]);
         $this->assertSame($value, $firstResult);

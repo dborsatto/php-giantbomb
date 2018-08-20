@@ -1,20 +1,15 @@
 <?php
 
 /**
- * This file is part of the GiantBomb PHP API created by Davide Borsatto.
+ * This file is part of the dborsatto/php-giantbomb package.
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- *
- * @copyright (c) 2017, Davide Borsatto
+ * @license   MIT
  */
 
 namespace DBorsatto\GiantBomb;
 
 /**
- * Class Repository.
- *
- * @author Davide Borsatto <davide.borsatto@gmail.com>
+ * Repository class.
  */
 class Repository
 {
@@ -65,7 +60,7 @@ class Repository
     private $queryParameters = [];
 
     /**
-     * Fields avaialbe for filtering in the current repository.
+     * Fields available for filtering in the current repository.
      *
      * @var array
      */

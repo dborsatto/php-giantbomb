@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * This file is part of the dborsatto/php-giantbomb package.
+ *
+ * @license   MIT
+ */
+
 namespace DBorsatto\GiantBomb\Test;
 
 use DBorsatto\GiantBomb\Config;
@@ -46,10 +52,11 @@ class RepositoryTest extends TestCase
     {
         $models = $this->repository->query()->find();
         $this->assertSame(\count($models), 2);
+
         $this->assertInternalType('array', $models[1]->get('parameters'));
 
         $models = $this->repository->find(new Query());
-        $this->assertSame(\count($models), 2);
+        $this->assertCount(2, $models);
         $this->assertInternalType('array', $models[1]->get('parameters'));
 
         $query = new Query();

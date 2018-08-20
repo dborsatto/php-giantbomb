@@ -1,20 +1,15 @@
 <?php
 
 /**
- * This file is part of the GiantBomb PHP API created by Davide Borsatto.
+ * This file is part of the dborsatto/php-giantbomb package.
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- *
- * @copyright (c) 2017, Davide Borsatto
+ * @license   MIT
  */
 
 namespace DBorsatto\GiantBomb;
 
 /**
- * Class Model.
- *
- * @author Davide Borsatto <davide.borsatto@gmail.com>
+ * Mode class.
  */
 class Model
 {
@@ -114,7 +109,7 @@ class Model
     }
 
     /**
-     * Magic function to check if the requestes value exists.
+     * Magic function to check if the requests value exists.
      *
      * @param string $value
      *
@@ -146,6 +141,8 @@ class Model
      */
     protected function convertValueString(string $value): string
     {
-        return \mb_strtolower(\preg_replace('/(?<=\\w)(?=[A-Z])/', '_$1', $value));
+        return \mb_strtolower(
+            \preg_replace('/(?<=\\w)(?=[A-Z])/', '_$1', $value)
+        );
     }
 }

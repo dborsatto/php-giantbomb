@@ -1,12 +1,9 @@
 <?php
 
 /**
- * This file is part of the GiantBomb PHP API created by Davide Borsatto.
+ * This file is part of the dborsatto/php-giantbomb package.
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- *
- * @copyright (c) 2017, Davide Borsatto
+ * @license   MIT
  */
 
 namespace DBorsatto\GiantBomb;
@@ -14,9 +11,7 @@ namespace DBorsatto\GiantBomb;
 use function GuzzleHttp\json_decode as guzzle_json_decode;
 
 /**
- * Class Config.
- *
- * @author Davide Borsatto <davide.borsatto@gmail.com>
+ * Config class.
  */
 class Config
 {
@@ -53,7 +48,10 @@ class Config
 
         // If no configuration is provided, loads the default
         if (!$config) {
-            $config = guzzle_json_decode(\file_get_contents(__DIR__.'/Resources/config/api.json'), true);
+            $config = guzzle_json_decode(
+                \file_get_contents(__DIR__.'/Resources/config/api.json'),
+                true
+            );
         }
 
         $this->apiEndpoint = $config['api_endpoint'];
@@ -81,7 +79,7 @@ class Config
     }
 
     /**
-     * Returns the repositoy configuration.
+     * Returns the repository configuration.
      *
      * @return array
      */

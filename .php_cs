@@ -1,5 +1,13 @@
 <?php
 
+$year = date('Y');
+
+$fileHeaderComment = <<<COMMENT
+This file is part of the dborsatto/php-giantbomb package.
+
+@license   MIT
+COMMENT;
+
 $finder = PhpCsFixer\Finder::create()
     ->in('src')
     ->in('tests')
@@ -8,10 +16,16 @@ $finder = PhpCsFixer\Finder::create()
 return PhpCsFixer\Config::create()
     ->setFinder($finder)
     ->setRiskyAllowed(true)
+    ->setCacheFile(__DIR__.'/.php_cs.cache')
     ->setRules([
         '@Symfony' => true,
         '@Symfony:risky' => true,
         'array_syntax' => ['syntax' => 'short'],
+        'header_comment' => [
+            'commentType' => 'PHPDoc',
+            'header' => $fileHeaderComment,
+            'separate' => 'both',
+        ],
         'linebreak_after_opening_tag' => true,
         'mb_str_functions' => true,
         'native_function_invocation' => true,
@@ -26,5 +40,4 @@ return PhpCsFixer\Config::create()
         'strict_comparison' => true,
         'strict_param' => true,
     ])
-    ->setCacheFile(__DIR__.'/.php_cs.cache')
 ;

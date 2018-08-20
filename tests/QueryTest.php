@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * This file is part of the dborsatto/php-giantbomb package.
+ *
+ * @license   MIT
+ */
+
 namespace DBorsatto\GiantBomb\Test;
 
 use DBorsatto\GiantBomb\Query;
