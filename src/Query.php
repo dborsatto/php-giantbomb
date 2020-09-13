@@ -1,223 +1,148 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * This file is part of the dborsatto/php-giantbomb package.
  *
- * @license   MIT
+ * @license MIT
  */
 
 namespace DBorsatto\GiantBomb;
 
-/**
- * Query class.
- */
+use DBorsatto\GiantBomb\Query\FilterBy;
+use DBorsatto\GiantBomb\Query\Parameter;
+use DBorsatto\GiantBomb\Query\SortBy;
+
 class Query
 {
     /**
-     * @var Repository
+     * @var array<FilterBy>
      */
-    private $repository;
+    private array $filterBy = [];
+
+    private ?SortBy $sortBy = null;
 
     /**
-     * A list of active filter.
-     *
-     * @var array
+     * @var array<string>
      */
-    private $filterBy = [];
+    private array $fieldList = [];
+
+    private ?string $resourceID = null;
 
     /**
-     * The active sorting field.
-     *
-     * @var string[]
+     * @var array<Parameter>
      */
-    private $sortBy = [];
+    private array $parameters = [];
 
-    /**
-     * A list of fields that will be loaded.
-     *
-     * @var array
-     */
-    private $fieldList = [];
-
-    /**
-     * The repository resource ID.
-     *
-     * @var string
-     */
-    private $resourceId;
-
-    /**
-     * A list of active parameters.
-     *
-     * @var array
-     */
-    private $parameters = [];
-
-    /**
-     * Class constructor.
-     *
-     * @param Repository|null $repository
-     */
-    public function __construct(Repository $repository = null)
+    public static function create(): self
     {
-        if ($repository) {
-            $this->setRepository($repository);
-        }
+        return new self();
     }
 
-    /**
-     * Sets the current Repository.
-     *
-     * @param Repository|null $repository
-     *
-     * @return self
-     */
-    public function setRepository(Repository $repository = null): self
+    public static function createWithParameter(string $parameter, string $value): self
     {
-        $this->repository = $repository;
+        $query = new self();
+        $query->parameters[] = new Parameter($parameter, $value);
 
-        return $this;
+        return $query;
     }
 
-    /**
-     * Adds a field to the current filtering set.
-     *
-     * @param string $field
-     * @param string $value
-     *
-     * @return self
-     */
+    public static function createForResourceId(string $resourceId): self
+    {
+        $query = new self();
+        $query->resourceID = $resourceId;
+
+        return $query;
+    }
+
     public function addFilterBy(string $field, string $value): self
     {
-        $this->filterBy[$field] = $value;
+        $query = clone $this;
+        $query->filterBy[] = new FilterBy($field, $value);
 
-        return $this;
+        return $query;
     }
 
-    /**
-     * Sorts by the given value.
-     *
-     * @param string $field
-     * @param string $direction
-     *
-     * @return self
-     */
-    public function sortBy(string $field, string $direction = 'asc'): self
+    public function sortAscending(string $field): self
     {
-        $this->sortBy = [$field, $direction];
+        $query = clone $this;
+        $query->sortBy = SortBy::createAscending($field);
 
-        return $this;
+        return $query;
+    }
+
+    public function sortDescending(string $field): self
+    {
+        $query = clone $this;
+        $query->sortBy = SortBy::createDescending($field);
+
+        return $query;
     }
 
     /**
-     * Sets the field list to be included in the result.
+     * @param array<string> $list
      *
-     * @param array $list
-     *
-     * @return self
+     * @return Query
      */
     public function setFieldList(array $list): self
     {
-        $this->fieldList = $list;
+        $query = clone $this;
+        $query->fieldList = $list;
 
-        return $this;
+        return $query;
     }
 
-    /**
-     * Sets a parameter for the current query.
-     *
-     * @param string $parameter
-     * @param string $value
-     *
-     * @return self
-     */
     public function setParameter(string $parameter, string $value): self
     {
-        $this->parameters[$parameter] = $value;
+        $query = clone $this;
+        $query->parameters[] = new Parameter($parameter, $value);
 
-        return $this;
+        return $query;
+    }
+
+    public function setResourceID(string $resourceID): self
+    {
+        $query = clone $this;
+        $query->resourceID = $resourceID;
+
+        return $query;
     }
 
     /**
-     * Sets a resource ID for the current query.
-     *
-     * @param string $resourceId
-     *
-     * @return self
+     * @return array<FilterBy>
      */
-    public function setResourceId(string $resourceId): self
+    public function getFilterBy(): array
     {
-        $this->resourceId = $resourceId;
+        return $this->filterBy;
+    }
 
-        return $this;
+    public function getSortBy(): ?SortBy
+    {
+        return $this->sortBy;
     }
 
     /**
-     * Loads an array of resource Model given the current data.
-     *
-     * @param Repository|null $repository
-     *
-     * @throws \RuntimeException
-     *
-     * @return Model[]
+     * @return array<string>
      */
-    public function find(Repository $repository = null): array
+    public function getFieldList(): array
     {
-        if (!$repository && !($repository = $this->repository)) {
-            throw new \RuntimeException('The current Query object is not tied to any Repository');
-        }
-
-        return $repository->find($this->compileParameters());
+        return $this->fieldList;
     }
 
     /**
-     * Loads a single resource Model given the current data.
-     *
-     * @param Repository|null $repository
-     *
-     * @throws \RuntimeException
-     *
-     * @return Model
+     * @return string|null
      */
-    public function findOne(Repository $repository = null): Model
+    public function getResourceID(): ?string
     {
-        if (!$repository && !($repository = $this->repository)) {
-            throw new \RuntimeException('The current Query object is not tied to any Repository');
-        }
-
-        return $repository->findOne($this->compileParameters());
+        return $this->resourceID;
     }
 
     /**
-     * Returns an array of the current parameters.
-     *
-     * @return array
+     * @return array<Parameter>
      */
-    public function compileParameters(): array
+    public function getParameters(): array
     {
-        $return = [
-            'query' => [],
-            'resource_id' => $this->resourceId,
-        ];
-
-        if ($this->filterBy) {
-            $return['query']['filter_by'] = $this->filterBy;
-        }
-
-        if ($this->sortBy) {
-            $return['query']['sort_by'] = $this->sortBy;
-        }
-
-        if ($this->fieldList) {
-            $return['query']['field_list'] = $this->fieldList;
-        }
-
-        if ($this->parameters) {
-            foreach ($this->parameters as $name => $value) {
-                $return['query'][$name] = $value;
-            }
-        }
-
-        return $return;
+        return $this->parameters;
     }
 }
