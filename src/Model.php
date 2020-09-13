@@ -1,37 +1,35 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * This file is part of the dborsatto/php-giantbomb package.
  *
- * @license   MIT
+ * @license MIT
  */
 
 namespace DBorsatto\GiantBomb;
 
-/**
- * Mode class.
- */
+use DBorsatto\GiantBomb\Exception\ModelException;
+use function array_key_exists;
+use function array_keys;
+use function mb_strpos;
+use function mb_strtolower;
+use function mb_substr;
+use function preg_replace;
+
 class Model
 {
-    /**
-     * The model name.
-     *
-     * @var string
-     */
-    protected $name = null;
+    protected string $name;
 
     /**
-     * The model values.
-     *
-     * @var array
+     * @var array<string, mixed>
      */
-    protected $values = [];
+    protected array $values = [];
 
     /**
-     * Class constructor.
-     *
-     * @param string $name
-     * @param array  $values
+     * @param string               $name
+     * @param array<string, mixed> $values
      */
     public function __construct(string $name, array $values)
     {
@@ -40,66 +38,30 @@ class Model
     }
 
     /**
-     * Returns all model values.
-     *
-     * @return array
-     */
-    public function getValues(): array
-    {
-        return $this->values;
-    }
-
-    /**
-     * Returns a single value.
-     *
-     * @param string $value
-     *
-     * @throws \InvalidArgumentException
-     *
-     * @return mixed
-     */
-    public function get(string $value)
-    {
-        if (!$this->has($value)) {
-            throw new \InvalidArgumentException(\sprintf(
-                'Value %s is not a valid key, expecting one of %s',
-                $value,
-                \implode(', ', \array_keys($this->values))
-            ));
-        }
-
-        return $this->values[$value];
-    }
-
-    /**
      * Magic function to allow methods like $model->getName().
      *
      * @param string $name
      * @param array  $arguments
      *
-     * @throws \InvalidArgumentException
+     * @throws ModelException
      *
      * @return mixed
      */
     public function __call(string $name, array $arguments)
     {
-        if (0 === \mb_strpos($name, 'get')) {
-            $key = $this->convertValueString(\mb_substr($name, 3));
+        if (0 === mb_strpos($name, 'get')) {
+            $key = $this->convertFromCamelCaseToPascalCase(mb_substr($name, 3));
 
             return $this->get($key);
         }
 
-        throw new \InvalidArgumentException(\sprintf(
-            'Call to invalid function %s on model %s',
-            $name,
-            $this->name
-        ));
+        throw ModelException::invalidMagicGetter($name, $this->name);
     }
 
     /**
-     * Magic function to access a model value.
-     *
      * @param string $value
+     *
+     * @throws ModelException
      *
      * @return mixed
      */
@@ -108,41 +70,41 @@ class Model
         return $this->get($value);
     }
 
-    /**
-     * Magic function to check if the requests value exists.
-     *
-     * @param string $value
-     *
-     * @return bool
-     */
     public function __isset(string $value): bool
     {
         return isset($this->values[$value]);
     }
 
-    /**
-     * Checks if the requested value is valid.
-     *
-     * @param string $value
-     *
-     * @return bool
-     */
-    public function has(string $value): bool
+    public function getValues(): array
     {
-        return \array_key_exists($value, $this->values);
+        return $this->values;
     }
 
     /**
-     * Converts a value from CamelCase to pascal_case.
-     *
      * @param string $value
      *
-     * @return string
+     * @throws ModelException
+     *
+     * @return mixed
      */
-    protected function convertValueString(string $value): string
+    public function get(string $value)
     {
-        return \mb_strtolower(
-            \preg_replace('/(?<=\\w)(?=[A-Z])/', '_$1', $value)
+        if (!$this->has($value)) {
+            throw ModelException::invalidValue($value, array_keys($this->values));
+        }
+
+        return $this->values[$value];
+    }
+
+    public function has(string $value): bool
+    {
+        return array_key_exists($value, $this->values);
+    }
+
+    protected function convertFromCamelCaseToPascalCase(string $value): string
+    {
+        return mb_strtolower(
+            preg_replace('/(?<=\\w)(?=[A-Z])/', '_$1', $value)
         );
     }
 }
