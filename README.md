@@ -32,9 +32,9 @@ $client = new DBorsatto\GiantBomb\Client($config, $cache);
 $query = DBorsatto\GiantBomb\Query::create()
     ->addFilterBy('name', 'Uncharted')
     ->sortBy('original_release_date', 'asc')
-    ->setFieldList(array('id', 'name', 'deck'))
-    ->setParameter('limit', 100)
-    ->setParameter('offset', 0);
+    ->setFieldList(['id', 'name', 'deck'])
+    ->setParameter('limit', '100')
+    ->setParameter('offset', '0');
 $games = $client->find('Game', $query);
 echo count($games)." Game objects loaded\n";
 
