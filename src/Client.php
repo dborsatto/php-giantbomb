@@ -18,7 +18,7 @@ use Psr\SimpleCache\CacheInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 use function mb_strtolower;
 
-class Client
+class Client implements ClientInterface
 {
     private Configuration $configuration;
 
@@ -33,14 +33,6 @@ class Client
         $this->apiCaller = $apiCaller ?? new ApiCaller();
     }
 
-    /**
-     * @param string $repositoryName
-     * @param Query  $query
-     *
-     * @throws SdkException
-     *
-     * @return Model[]
-     */
     public function find(string $repositoryName, Query $query): array
     {
         $repositoryConfiguration = $this->configuration->getRepository($repositoryName);
@@ -57,14 +49,6 @@ class Client
         return $models;
     }
 
-    /**
-     * @param string $repositoryName
-     * @param Query  $query
-     *
-     * @throws SdkException
-     *
-     * @return Model
-     */
     public function findOne(string $repositoryName, Query $query): Model
     {
         $repositoryConfiguration = $this->configuration->getRepository($repositoryName);
