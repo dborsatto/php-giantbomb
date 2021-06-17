@@ -2,7 +2,5 @@ build/
 vendor/
 .DS_STORE
 composer.phar
-phpunit.xml
 .php_cs.cache
-.phpunit.result.cache
 .idea/

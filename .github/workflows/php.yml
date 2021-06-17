@@ -9,25 +9,29 @@ on:
 jobs:
     build:
 
-        runs-on: ubuntu-latest
+        runs-on: ${{ matrix.operating-system }}
+        strategy:
+            matrix:
+                operating-system: [ubuntu-latest]
+                php-versions: ['7.4', '8.0']
+
+        name: PHP ${{ matrix.php-versions }} on ${{ matrix.operating-system }}
 
         steps:
             - uses: actions/checkout@v2
 
-            - name: Validate composer.json and composer.lock
+            - name: Install PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php-versions }}
+
+            - name: Check PHP Version
+              run: php -v
+
+            - name: Validate composer.json
               run: composer validate
 
-            - name: Cache Composer packages
-              id: composer-cache
-              uses: actions/cache@v2
-              with:
-                  path: vendor
-                  key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-                  restore-keys: |
-                      ${{ runner.os }}-php-
-
             - name: Install dependencies
-              if: steps.composer-cache.outputs.cache-hit != 'true'
               run: composer install --prefer-dist --no-progress --no-suggest
 
             - name: Run test suite
