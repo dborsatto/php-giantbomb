@@ -2,7 +2,7 @@
     "name": "dborsatto/php-giantbomb",
     "description": "A PHP library that acts as a wrapper for the GiantBomb API.",
     "require": {
-        "php": "^7.4",
+        "php": "^7.4|^8.0",
         "ext-mbstring": "*",
         "ext-json": "*",
         "cache/void-adapter": "^1.0",
